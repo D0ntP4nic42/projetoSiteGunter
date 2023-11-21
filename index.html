@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <title>Title</title>
     <!-- Required meta tags -->
@@ -8,8 +8,66 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        header {
+            background-color: whitesmoke;
+        }
+        h1 {
+            font-family: Helvetica, sans-serif;
+        }
+    </style>
   </head>
   <body>
-      
+    <header class="text-center pt-3 pb-3">
+        <h1>Consórsios LTDA</h1>
+    </header>
+
+    <main class="text-center">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código do vendedor</th>
+                    <th>Nome do vendedor</th>
+                    <th>Cargo do vendedor</th>
+                    <th>Código da venda</th>
+                    <th>Valor da venda</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </main>
+
+    <script>
+        let vendas = [
+            {
+                codVendedor: '01',
+                nomeVendedor: 'Leonardo',
+                cargo: 'Pleno',
+                codVenda: '01',
+                valorVenda: '2000,00'
+            }
+        ]
+
+        
+        function renderizarTabela() {
+            let tableBody = document.getElementById('tableBody')
+            
+            tableBody.innerHTML = ''
+            vendas.forEach(venda => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${venda.codVendedor}</td>
+                        <td>${venda.nomeVendedor}</td>
+                        <td>${venda.cargo}</td>
+                        <td>${venda.codVenda}</td>
+                        <td>${venda.valorVenda}</td>
+                    </tr>
+                `
+            })
+        }
+
+        window.addEventListener('DOMContentLoaded', renderizarTabela)
+    </script>
   </body>
 </html>
