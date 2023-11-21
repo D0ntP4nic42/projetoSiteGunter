@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <title>Title</title>
+    <title>Relátorio de vendas</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,17 +13,29 @@
         header {
             background-color: whitesmoke;
         }
+
         h1 {
             font-family: Helvetica, sans-serif;
+        }
+
+        main {
+            width: 960px;
+            margin: auto;
+            background-color: white;
+        }
+
+        tr:hover {
+            background-color: lightgrey;
+            transition: all ease;
         }
     </style>
   </head>
   <body>
     <header class="text-center pt-3 pb-3">
-        <h1>Consórsios LTDA</h1>
+        <h1>Consórsios.LTDA</h1>
     </header>
 
-    <main class="text-center">
+    <main class="text-center mt-2">
         <table class="table">
             <thead>
                 <tr>
@@ -42,10 +54,26 @@
         let vendas = [
             {
                 codVendedor: '01',
-                nomeVendedor: 'Leonardo',
+                nomeVendedor: 'Leonardo Brito Gomes',
                 cargo: 'Pleno',
                 codVenda: '01',
-                valorVenda: '2000,00'
+                valorVenda: '30000'
+            },
+
+            {
+                codVendedor: '02',
+                nomeVendedor: 'Gimli, filho de Glóin',
+                cargo: 'Júnior',
+                codVenda: '03',
+                valorVenda: '80'
+            },
+
+            {
+                codVendedor: '01',
+                nomeVendedor: 'Leonardo Brito Gomes',
+                cargo: 'Pleno',
+                codVenda: '02',
+                valorVenda: '200'
             }
         ]
 
@@ -55,13 +83,19 @@
             
             tableBody.innerHTML = ''
             vendas.forEach(venda => {
+                venda.valorVenda = parseFloat(venda.valorVenda)
+                valorVendaFormatado = venda.valorVenda.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                })
+
                 tableBody.innerHTML += `
                     <tr>
                         <td>${venda.codVendedor}</td>
                         <td>${venda.nomeVendedor}</td>
                         <td>${venda.cargo}</td>
                         <td>${venda.codVenda}</td>
-                        <td>${venda.valorVenda}</td>
+                        <td>${valorVendaFormatado}</td>
                     </tr>
                 `
             })
