@@ -69,11 +69,11 @@
             <tbody id="vendasTableBody"></tbody>
         </table>
 
-        <button type="button" class="btn btn-primary" onclick="gerarRelatorio()">Gerar relatório de vendas</button>
+        <button type="button" class="btn btn-primary" onclick="infoRelatorio()">Gerar relatório de vendas</button>
 
         <div id="relatorioVendas" class="mt-4">
             <table class="table">
-                <thead>
+                <thead class="prevent-select">
                     <tr>
                         <th>Nome</th>
                         <th>Cargo</th>
@@ -165,77 +165,89 @@
             }
         ]
         
-        let vendedores = []
-        let qtdVendedores = 0
-
+        //documents
         const modalAdd = document.getElementById("modalAdicionarContato")
         const form = document.getElementById("formAdicionarContato")
         const relatorioVendas = document.getElementById("relatorioVendas")
+        const relatorioVendasBody = document.getElementById("relatorioTableBody")
 
-
+        
+        
         //vendas
         function renderizarTabelaVendas() {
             let vendasTableBody = document.getElementById('vendasTableBody')
             
             vendasTableBody.innerHTML = ''
-            vendas.forEach((venda, index) => { //formatar dinheiro
-                venda.valorVenda = parseFloat(venda.valorVenda)
+            vendas.forEach((venda, index) => { 
+                venda.valorVenda = parseFloat(venda.valorVenda) //formatar dinheiro
                 valorVendaFormatado = venda.valorVenda.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
                 })
 
-                venda.codVendedor = venda.codVendedor.padStart(2, '0')
+                venda.codVendedor = venda.codVendedor.padStart(2, '0') //formatar numeros
                 venda.codVenda = venda.codVenda.padStart(2, '0')
-
+                
                 vendasTableBody.innerHTML += `
-                    <tr>
-                        <td style="padding-top: 20px;">${venda.codVendedor}</td>
-                        <td style="padding-top: 20px;">${venda.nomeVendedor}</td>
-                        <td style="padding-top: 20px;">${venda.cargo}</td>
-                        <td style="padding-top: 20px;">${venda.codVenda}</td>
-                        <td style="padding-top: 20px;">${valorVendaFormatado}</td>
-                        <td><button type="button" class="btn btn-primary text-center">Editar</button></td>
-                    </tr>
-                `
-            })
-        }
+                        <tr>
+                            <td style="padding-top: 20px;">${venda.codVendedor}</td>
+                            <td style="padding-top: 20px;">${venda.nomeVendedor}</td>
+                            <td style="padding-top: 20px;">${venda.cargo}</td>
+                            <td style="padding-top: 20px;">${venda.codVenda}</td>
+                            <td style="padding-top: 20px;">${valorVendaFormatado}</td>
+                            <td><button type="button" class="btn btn-primary text-center">Editar</button></td>
+                            </tr>
+                        `
+                    })
+                }
 
-        function adicionarVenda() {
-            event.preventDefault();
-
-            let codVendedor = document.getElementById("codVendedor").value
-            let nomeVendedor = document.getElementById("nome").value
-            let cargo = document.getElementById("cargo").value
-            let codVenda = document.getElementById("codVenda").value
-            let valorVenda = document.getElementById("valorVenda").value 
-
-            let venda = {
-                codVendedor,
-                nomeVendedor,
-                cargo,
-                codVenda,
-                valorVenda
-            }
+                function adicionarVenda() {
+                    event.preventDefault();
             
-            vendas.push(venda)
-            form.reset()
+                    let codVendedor = document.getElementById("codVendedor").value
+                    let nomeVendedor = document.getElementById("nome").value
+                    let cargo = document.getElementById("cargo").value
+                    let codVenda = document.getElementById("codVenda").value
+                    let valorVenda = document.getElementById("valorVenda").value 
+                    
+                    let venda = {
+                        codVendedor,
+                        nomeVendedor,
+                        cargo,
+                        codVenda,
+                        valorVenda
+                    }
+                    
+                    vendas.push(venda)
+                    form.reset()
+                    
+                    renderizarTabelaVendas()
+                    modalAdd.style.display = 'none'
+                }
 
-            renderizarTabelaVendas()
-            modalAdd.style.display = 'none'
-        }
-
-        //relatorio
-        function gerarRelatorio() {
-            relatorioVendas.style.display = 'block'
+                //relatorio
+                function infoRelatorio() {
+                    let vendedores = []
             
-            let codAdd = []
-            
-            vendas.forEach(venda => { 
-                if(codAdd.includes(venda.codVendedor)) { //caso adicionado
-                    vendedores.forEach(vendedor => {
-                        if(vendedor.nome === venda.nomeVendedor){
-
+                    let codAdd = []
+                    
+                    vendas.forEach(venda => { 
+                        if(codAdd.includes(venda.codVendedor)) { //caso adicionado
+                            vendedores.forEach(vendedor => {
+                                if(vendedor.nome === venda.nomeVendedor){
+                                    vendedor.totalVendas += venda.valorVenda
+                                    
+                                    if(venda.valorVenda > vendedor.maiorVenda){
+                                        vendedor.maiorVenda = venda.valorVenda
+                                    }
+                                    
+                                    if (vendedor.cargo === 'Júnior') {
+                                        vendedor.comissao = vendedor.totalVendas * 0.01
+                            } else if (vendedor.cargo === 'Pleno') {
+                                vendedor.comissao = vendedor.totalVendas * 0.02
+                            } else {
+                                vendedor.comissao = vendedor.totalVendas * 0.03
+                            }
                         }
                     })
                     
@@ -253,25 +265,57 @@
                         comissao = totalVendas*0.03
                     }
                     
-                    let vendedor = {
+                    vendedor = {
                             nome,
                             cargo,
                             totalVendas,
                             maiorVenda,
                             comissao
                         }
-                    
-                    vendedores.push(vendedor)
-                    codAdd.push(venda.codVendedor)
-                }
-            })
+                        
+                        vendedores.push(vendedor)
+                        codAdd.push(venda.codVendedor)
+                    }
+                })
 
+                //sorting
+                vendedores.sort((a, b) => b.totalVendas - a.totalVendas);
+                
+                gerarRelatorio(vendedores)
+            }
+        
+        function gerarRelatorio(vendedores) {
+            relatorioVendas.style.display = 'block'
+            
+            relatorioVendasBody.innerHTML = ''
+            
             vendedores.forEach(vendedor => {
-                console.log(vendedor)
-            })
+                vendedor.totalVendas = vendedor.totalVendas.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                })
+                vendedor.maiorVenda = vendedor.maiorVenda.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                })
+                vendedor.comissao = vendedor.comissao.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                })
+
+                relatorioVendasBody.innerHTML += `
+                    <tr>
+                        <td>${vendedor.nome}</td>
+                        <td>${vendedor.cargo}</td>
+                        <td>${vendedor.totalVendas}</td>
+                        <td>${vendedor.maiorVenda}</td>
+                        <td>${vendedor.comissao}</td>
+                    </tr>
+                    `
+                })
         }
-
-
+            
+            
         //eventos
         form.addEventListener('submit', adicionarVenda)
 
