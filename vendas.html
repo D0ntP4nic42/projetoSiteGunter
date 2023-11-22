@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <title>Relátorio de vendas</title>
+
+<head>
+    <title>Consórsios.LTDA: Vendas</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <style>
         header {
@@ -42,13 +44,17 @@
         }
 
         .prevent-select {
-            -webkit-user-select: none; /* Safari */
-            -ms-user-select: none; /* IE 10 and IE 11 */
-            user-select: none; /* Standard syntax */
+            -webkit-user-select: none;
+            /* Safari */
+            -ms-user-select: none;
+            /* IE 10 and IE 11 */
+            user-select: none;
+            /* Standard syntax */
         }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <header class="text-center pt-3 pb-3 prevent-select">
         <h1>Consórsios</h1>
         <h6>.LTDA</h6>
@@ -63,28 +69,15 @@
                     <th style="padding-bottom: 18px;">Cargo do vendedor</th>
                     <th style="padding-bottom: 18px;">Código da venda</th>
                     <th style="padding-bottom: 18px;">Valor da venda</th>
-                    <th><button type="button" class="btn btn-primary text-center" onclick="modalAdd.style.display = 'block'">+Adicionar</button></th>
+                    <th><button type="button" class="btn btn-primary text-center"
+                            onclick="modalAdd.style.display = 'block'">+Adicionar</button></th>
                 </tr>
             </thead>
             <tbody id="vendasTableBody"></tbody>
         </table>
 
-        <button type="button" class="btn btn-primary" onclick="infoRelatorio()">Gerar relatório de vendas</button>
-
-        <div id="relatorioVendas" class="mt-4">
-            <table class="table">
-                <thead class="prevent-select">
-                    <tr>
-                        <th>Nome</th>
-                        <th>Cargo</th>
-                        <th>Total de vendas</th>
-                        <th>Maior venda</th>
-                        <th>Comissão</th>
-                    </tr>
-                </thead>
-                <tbody id="relatorioTableBody"></tbody>
-            </table>
-        </div>
+        <a href="relatório.html" target="_blank" ><button type="button" class="btn btn-primary"
+                onclick="infoRelatorio()">Gerar relatório de vendas</button></a>
 
         <!-- modal Add -->
         <div id="modalAdicionarContato" class="modal">
@@ -92,7 +85,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Adicionar nova venda</h5>
-                        <button type="button" class="close" id="closeModal" onclick="modalAdd.style.display = 'none'">&times;</button>
+                        <button type="button" class="close" id="closeModal"
+                            onclick="modalAdd.style.display = 'none'">&times;</button>
                     </div>
                     <div class="modal-body">
                         <p>Formulário para adicionar venda.</p>
@@ -117,7 +111,8 @@
                                 <label for="valorVenda">Valor venda:</label>
                                 <input type="number" class="form-control" id="valorVenda" required>
                             </div>
-                            <div class="text-center"><button type="submit" class="btn btn-primary">Salvar Contato</button></div>
+                            <div class="text-center"><button type="submit" class="btn btn-primary">Salvar
+                                    Contato</button></div>
                         </form>
                     </div>
                 </div>
@@ -164,21 +159,17 @@
                 valorVenda: '200'
             }
         ]
-        
+
         //documents
         const modalAdd = document.getElementById("modalAdicionarContato")
         const form = document.getElementById("formAdicionarContato")
-        const relatorioVendas = document.getElementById("relatorioVendas")
-        const relatorioVendasBody = document.getElementById("relatorioTableBody")
 
-        
-        
         //vendas
         function renderizarTabelaVendas() {
             let vendasTableBody = document.getElementById('vendasTableBody')
-            
+
             vendasTableBody.innerHTML = ''
-            vendas.forEach((venda, index) => { 
+            vendas.forEach((venda, index) => {
                 venda.valorVenda = parseFloat(venda.valorVenda) //formatar dinheiro
                 valorVendaFormatado = venda.valorVenda.toLocaleString('pt-BR', {
                     style: 'currency',
@@ -187,7 +178,7 @@
 
                 venda.codVendedor = venda.codVendedor.padStart(2, '0') //formatar numeros
                 venda.codVenda = venda.codVenda.padStart(2, '0')
-                
+
                 vendasTableBody.innerHTML += `
                         <tr>
                             <td style="padding-top: 20px;">${venda.codVendedor}</td>
@@ -196,53 +187,53 @@
                             <td style="padding-top: 20px;">${venda.codVenda}</td>
                             <td style="padding-top: 20px;">${valorVendaFormatado}</td>
                             <td><button type="button" class="btn btn-primary text-center">Editar</button></td>
-                            </tr>
+                        </tr>
                         `
-                    })
-                }
+            })
+        }
 
-                function adicionarVenda() {
-                    event.preventDefault();
-            
-                    let codVendedor = document.getElementById("codVendedor").value
-                    let nomeVendedor = document.getElementById("nome").value
-                    let cargo = document.getElementById("cargo").value
-                    let codVenda = document.getElementById("codVenda").value
-                    let valorVenda = document.getElementById("valorVenda").value 
-                    
-                    let venda = {
-                        codVendedor,
-                        nomeVendedor,
-                        cargo,
-                        codVenda,
-                        valorVenda
-                    }
-                    
-                    vendas.push(venda)
-                    form.reset()
-                    
-                    renderizarTabelaVendas()
-                    modalAdd.style.display = 'none'
-                }
+        function adicionarVenda() {
+            event.preventDefault();
 
-                //relatorio
-                function infoRelatorio() {
-                    let vendedores = []
-            
-                    let codAdd = []
-                    
-                    vendas.forEach(venda => { 
-                        if(codAdd.includes(venda.codVendedor)) { //caso adicionado
-                            vendedores.forEach(vendedor => {
-                                if(vendedor.nome === venda.nomeVendedor){
-                                    vendedor.totalVendas += venda.valorVenda
-                                    
-                                    if(venda.valorVenda > vendedor.maiorVenda){
-                                        vendedor.maiorVenda = venda.valorVenda
-                                    }
-                                    
-                                    if (vendedor.cargo === 'Júnior') {
-                                        vendedor.comissao = vendedor.totalVendas * 0.01
+            let codVendedor = document.getElementById("codVendedor").value
+            let nomeVendedor = document.getElementById("nome").value
+            let cargo = document.getElementById("cargo").value
+            let codVenda = document.getElementById("codVenda").value
+            let valorVenda = document.getElementById("valorVenda").value
+
+            let venda = {
+                codVendedor,
+                nomeVendedor,
+                cargo,
+                codVenda,
+                valorVenda
+            }
+
+            vendas.push(venda)
+            form.reset()
+
+            renderizarTabelaVendas()
+            modalAdd.style.display = 'none'
+        }
+
+        //relatorio
+        function infoRelatorio() {
+            let vendedores = []
+
+            let codAdd = []
+
+            vendas.forEach(venda => {
+                if (codAdd.includes(venda.codVendedor)) { //caso adicionado
+                    vendedores.forEach(vendedor => {
+                        if (vendedor.nome === venda.nomeVendedor) {
+                            vendedor.totalVendas += venda.valorVenda
+
+                            if (venda.valorVenda > vendedor.maiorVenda) {
+                                vendedor.maiorVenda = venda.valorVenda
+                            }
+
+                            if (vendedor.cargo === 'Júnior') {
+                                vendedor.comissao = vendedor.totalVendas * 0.01
                             } else if (vendedor.cargo === 'Pleno') {
                                 vendedor.comissao = vendedor.totalVendas * 0.02
                             } else {
@@ -250,45 +241,45 @@
                             }
                         }
                     })
-                    
+
                 } else { //caso n tenha sido adicionado ainda
                     let nome = venda.nomeVendedor
                     let cargo = venda.cargo
                     let totalVendas = parseFloat(venda.valorVenda)
                     let maiorVenda = parseFloat(venda.valorVenda)
 
-                    if(cargo === 'Júnior') {
-                        comissao = totalVendas*0.01
-                    } else if(cargo === 'Pleno') {
-                        comissao = totalVendas*0.02
+                    if (cargo === 'Júnior') {
+                        comissao = totalVendas * 0.01
+                    } else if (cargo === 'Pleno') {
+                        comissao = totalVendas * 0.02
                     } else {
-                        comissao = totalVendas*0.03
+                        comissao = totalVendas * 0.03
                     }
-                    
-                    vendedor = {
-                            nome,
-                            cargo,
-                            totalVendas,
-                            maiorVenda,
-                            comissao
-                        }
-                        
-                        vendedores.push(vendedor)
-                        codAdd.push(venda.codVendedor)
-                    }
-                })
 
-                //sorting
-                vendedores.sort((a, b) => b.totalVendas - a.totalVendas);
-                
-                gerarRelatorio(vendedores)
-            }
-        
+                    vendedor = {
+                        nome,
+                        cargo,
+                        totalVendas,
+                        maiorVenda,
+                        comissao
+                    }
+
+                    vendedores.push(vendedor)
+                    codAdd.push(venda.codVendedor)
+                }
+            })
+
+            //sorting
+            vendedores.sort((a, b) => b.totalVendas - a.totalVendas);
+
+            localStorage.setItem("vendedoresArr", JSON.stringify(vendedores)) //mandar para próxima página
+        }
+
         function gerarRelatorio(vendedores) {
             relatorioVendas.style.display = 'block'
-            
+
             relatorioVendasBody.innerHTML = ''
-            
+
             vendedores.forEach(vendedor => {
                 vendedor.totalVendas = vendedor.totalVendas.toLocaleString('pt-BR', {
                     style: 'currency',
@@ -312,14 +303,14 @@
                         <td>${vendedor.comissao}</td>
                     </tr>
                     `
-                })
+            })
         }
-            
-            
+
+
         //eventos
         form.addEventListener('submit', adicionarVenda)
 
         window.addEventListener('DOMContentLoaded', renderizarTabelaVendas)
     </script>
-  </body>
+</body>
 </html>

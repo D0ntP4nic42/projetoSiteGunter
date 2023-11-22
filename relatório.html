@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Consórsios.LTDA: Relatório</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        header {
+            background-color: whitesmoke;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: Helvetica, sans-serif;
+        }
+
+        main {
+            width: 960px;
+            margin: auto;
+            background-color: white;
+        }
+
+        tbody tr:hover {
+            background-color: lightgrey;
+            transition: all ease;
+        }
+
+        .prevent-select {
+            -webkit-user-select: none;
+            /* Safari */
+            -ms-user-select: none;
+            /* IE 10 and IE 11 */
+            user-select: none;
+            /* Standard syntax */
+        }
+    </style>
+</head>
+
+<body>
+    <header class="text-center pt-3 pb-3 prevent-select">
+        <h1>Consórsios</h1>
+        <h6>.LTDA</h6>
+    </header>
+
+    <main>
+        <div id="relatorioVendas" class="mt-4">
+            <table class="table">
+                <thead class="prevent-select">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cargo</th>
+                        <th>Total de vendas</th>
+                        <th>Maior venda</th>
+                        <th>Comissão</th>
+                    </tr>
+                </thead>
+                <tbody id="relatorioTableBody"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        let vendedores = JSON.parse(localStorage.getItem('vendedoresArr'))
+
+        const relatorioVendas = document.getElementById("relatorioVendas")
+        const relatorioVendasBody = document.getElementById("relatorioTableBody")
+
+        
+        function gerarRelatorio() {
+            vendedores.forEach(vendedor => {
+                vendedor.totalVendas = vendedor.totalVendas.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                })
+                vendedor.maiorVenda = vendedor.maiorVenda.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                })
+                vendedor.comissao = vendedor.comissao.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                })
+
+                relatorioVendasBody.innerHTML += `
+                    <tr>
+                        <td>${vendedor.nome}</td>
+                        <td>${vendedor.cargo}</td>
+                        <td>${vendedor.totalVendas}</td>
+                        <td>${vendedor.maiorVenda}</td>
+                        <td>${vendedor.comissao}</td>
+                    </tr>
+                    `
+            })
+        }
+
+        window.addEventListener('DOMContentLoaded', gerarRelatorio)
+    </script>
+</body>
+
+</html>
