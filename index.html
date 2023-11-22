@@ -12,6 +12,9 @@
     <style>
         header {
             background-color: whitesmoke;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
         }
 
         h1 {
@@ -24,30 +27,115 @@
             background-color: white;
         }
 
-        tr:hover {
+        tbody tr:hover {
             background-color: lightgrey;
             transition: all ease;
+        }
+
+        .modal {
+            display: none;
+            z-index: 3;
+        }
+
+        #relatorioVendas {
+            display: none;
+        }
+
+        .prevent-select {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
         }
     </style>
   </head>
   <body>
-    <header class="text-center pt-3 pb-3">
-        <h1>Consórsios.LTDA</h1>
+    <header class="text-center pt-3 pb-3 prevent-select">
+        <h1>Consórsios</h1>
+        <h6>.LTDA</h6>
     </header>
 
     <main class="text-center mt-2">
-        <table class="table">
-            <thead>
+        <table class="table" id="vendas">
+            <thead class="prevent-select">
                 <tr>
-                    <th>Código do vendedor</th>
-                    <th>Nome do vendedor</th>
-                    <th>Cargo do vendedor</th>
-                    <th>Código da venda</th>
-                    <th>Valor da venda</th>
+                    <th style="padding-bottom: 18px;">Código do vendedor</th>
+                    <th style="padding-bottom: 18px;">Nome do vendedor</th>
+                    <th style="padding-bottom: 18px;">Cargo do vendedor</th>
+                    <th style="padding-bottom: 18px;">Código da venda</th>
+                    <th style="padding-bottom: 18px;">Valor da venda</th>
+                    <th><button type="button" class="btn btn-primary text-center" onclick="modalAdd.style.display = 'block'">+Adicionar</button></th>
                 </tr>
             </thead>
-            <tbody id="tableBody"></tbody>
+            <tbody id="vendasTableBody"></tbody>
         </table>
+
+        <button type="button" class="btn btn-primary" onclick="gerarRelatorio()">Gerar relatório de vendas</button>
+
+        <div id="relatorioVendas" class="mt-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cargo</th>
+                        <th>Total de vendas</th>
+                        <th>Maior venda</th>
+                        <th>Comissão</th>
+                    </tr>
+                </thead>
+                <tbody id="relatorioTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- modal Add -->
+        <div id="modalAdicionarContato" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Adicionar nova venda</h5>
+                        <button type="button" class="close" id="closeModal" onclick="modalAdd.style.display = 'none'">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Formulário para adicionar venda.</p>
+                        <form id="formAdicionarContato" class="text-left">
+                            <div class="form-group">
+                                <label for="codVendedor">Código do vendedor:</label>
+                                <input type="number" class="form-control" id="codVendedor" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nome">Nome:</label>
+                                <input type="text" class="form-control" id="nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cargo">Cargo:</label>
+                                <input type="text" class="form-control" id="cargo" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="codVenda">Código da venda:</label>
+                                <input type="number" class="form-control" id="codVenda" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="valorVenda">Valor venda:</label>
+                                <input type="number" class="form-control" id="valorVenda" required>
+                            </div>
+                            <div class="text-center"><button type="submit" class="btn btn-primary">Salvar Contato</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- overlay -->
+        <div id="overlay" style="
+                    height: 100%;
+                    width: 100%;
+                    background-color: rgb(0, 0, 0, 0.5);
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    z-index: 2;">
+        </div>
+
     </main>
 
     <script>
@@ -76,32 +164,118 @@
                 valorVenda: '200'
             }
         ]
-
         
-        function renderizarTabela() {
-            let tableBody = document.getElementById('tableBody')
+        let vendedores = []
+        let qtdVendedores = 0
+
+        const modalAdd = document.getElementById("modalAdicionarContato")
+        const form = document.getElementById("formAdicionarContato")
+        const relatorioVendas = document.getElementById("relatorioVendas")
+
+
+        //vendas
+        function renderizarTabelaVendas() {
+            let vendasTableBody = document.getElementById('vendasTableBody')
             
-            tableBody.innerHTML = ''
-            vendas.forEach(venda => {
+            vendasTableBody.innerHTML = ''
+            vendas.forEach((venda, index) => { //formatar dinheiro
                 venda.valorVenda = parseFloat(venda.valorVenda)
                 valorVendaFormatado = venda.valorVenda.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
                 })
 
-                tableBody.innerHTML += `
+                venda.codVendedor = venda.codVendedor.padStart(2, '0')
+                venda.codVenda = venda.codVenda.padStart(2, '0')
+
+                vendasTableBody.innerHTML += `
                     <tr>
-                        <td>${venda.codVendedor}</td>
-                        <td>${venda.nomeVendedor}</td>
-                        <td>${venda.cargo}</td>
-                        <td>${venda.codVenda}</td>
-                        <td>${valorVendaFormatado}</td>
+                        <td style="padding-top: 20px;">${venda.codVendedor}</td>
+                        <td style="padding-top: 20px;">${venda.nomeVendedor}</td>
+                        <td style="padding-top: 20px;">${venda.cargo}</td>
+                        <td style="padding-top: 20px;">${venda.codVenda}</td>
+                        <td style="padding-top: 20px;">${valorVendaFormatado}</td>
+                        <td><button type="button" class="btn btn-primary text-center">Editar</button></td>
                     </tr>
                 `
             })
         }
 
-        window.addEventListener('DOMContentLoaded', renderizarTabela)
+        function adicionarVenda() {
+            event.preventDefault();
+
+            let codVendedor = document.getElementById("codVendedor").value
+            let nomeVendedor = document.getElementById("nome").value
+            let cargo = document.getElementById("cargo").value
+            let codVenda = document.getElementById("codVenda").value
+            let valorVenda = document.getElementById("valorVenda").value 
+
+            let venda = {
+                codVendedor,
+                nomeVendedor,
+                cargo,
+                codVenda,
+                valorVenda
+            }
+            
+            vendas.push(venda)
+            form.reset()
+
+            renderizarTabelaVendas()
+            modalAdd.style.display = 'none'
+        }
+
+        //relatorio
+        function gerarRelatorio() {
+            relatorioVendas.style.display = 'block'
+            
+            let codAdd = []
+            
+            vendas.forEach(venda => { 
+                if(codAdd.includes(venda.codVendedor)) { //caso adicionado
+                    vendedores.forEach(vendedor => {
+                        if(vendedor.nome === venda.nomeVendedor){
+
+                        }
+                    })
+                    
+                } else { //caso n tenha sido adicionado ainda
+                    let nome = venda.nomeVendedor
+                    let cargo = venda.cargo
+                    let totalVendas = parseFloat(venda.valorVenda)
+                    let maiorVenda = parseFloat(venda.valorVenda)
+
+                    if(cargo === 'Júnior') {
+                        comissao = totalVendas*0.01
+                    } else if(cargo === 'Pleno') {
+                        comissao = totalVendas*0.02
+                    } else {
+                        comissao = totalVendas*0.03
+                    }
+                    
+                    let vendedor = {
+                            nome,
+                            cargo,
+                            totalVendas,
+                            maiorVenda,
+                            comissao
+                        }
+                    
+                    vendedores.push(vendedor)
+                    codAdd.push(venda.codVendedor)
+                }
+            })
+
+            vendedores.forEach(vendedor => {
+                console.log(vendedor)
+            })
+        }
+
+
+        //eventos
+        form.addEventListener('submit', adicionarVenda)
+
+        window.addEventListener('DOMContentLoaded', renderizarTabelaVendas)
     </script>
   </body>
 </html>
