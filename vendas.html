@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./caminhao.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -75,9 +76,25 @@
             </thead>
             <tbody id="vendasTableBody"></tbody>
         </table>
+        
+        <button id="btnCaminhao" class="truck-button" onclick="infoRelatorio()">
+            <span class="default">Gerar relatório de vendas</span>
+            <span class="success">
+                Abrir relatório de vendas
+                <svg viewbox="0 0 12 10">
+                    <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </svg>
+            </span>
+            <div class="truck">
+                <div class="wheel"></div>
+                <div class="back"></div>
+                <div class="front"></div>
+                <div class="box"></div>
+            </div>
+        </button>
 
-        <a href="relatório.html" target="_blank" ><button type="button" class="btn btn-primary"
-                onclick="infoRelatorio()">Gerar relatório de vendas</button></a>
+        <script src='https://cdn.jsdelivr.net/npm/gsap@3.0.1/dist/gsap.min.js'></script>
+        <script src="./caminhao.js"></script>
 
         <!-- modal Add -->
         <div id="modalAdicionarContato" class="modal">
@@ -163,6 +180,7 @@
         //documents
         const modalAdd = document.getElementById("modalAdicionarContato")
         const form = document.getElementById("formAdicionarContato")
+        const btnCaminhao = document.getElementById("btnCaminhao")
 
         //vendas
         function renderizarTabelaVendas() {
@@ -269,43 +287,19 @@
                 }
             })
 
+            btnCaminhao.addEventListener('click', function() {
+                if(btnCaminhao.classList.contains('podePassar')){
+                    window.open("relatório.html", '_blank')
+                    btnCaminhao.classList.remove('podePassar')
+                }
+            })
+
             //sorting
             vendedores.sort((a, b) => b.totalVendas - a.totalVendas);
 
+
             localStorage.setItem("vendedoresArr", JSON.stringify(vendedores)) //mandar para próxima página
         }
-
-        function gerarRelatorio(vendedores) {
-            relatorioVendas.style.display = 'block'
-
-            relatorioVendasBody.innerHTML = ''
-
-            vendedores.forEach(vendedor => {
-                vendedor.totalVendas = vendedor.totalVendas.toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                })
-                vendedor.maiorVenda = vendedor.maiorVenda.toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                })
-                vendedor.comissao = vendedor.comissao.toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                })
-
-                relatorioVendasBody.innerHTML += `
-                    <tr>
-                        <td>${vendedor.nome}</td>
-                        <td>${vendedor.cargo}</td>
-                        <td>${vendedor.totalVendas}</td>
-                        <td>${vendedor.maiorVenda}</td>
-                        <td>${vendedor.comissao}</td>
-                    </tr>
-                    `
-            })
-        }
-
 
         //eventos
         form.addEventListener('submit', adicionarVenda)
