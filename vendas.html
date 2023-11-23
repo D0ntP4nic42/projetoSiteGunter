@@ -8,9 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="./caminhao.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <!-- style caminhao -->
+    <link rel="stylesheet" href="caminhao/caminhao.css">
 
     <style>
         header {
@@ -28,11 +30,6 @@
             width: 960px;
             margin: auto;
             background-color: white;
-        }
-
-        tbody tr:hover {
-            background-color: lightgrey;
-            transition: all ease;
         }
 
         .modal {
@@ -62,7 +59,7 @@
     </header>
 
     <main class="text-center mt-2">
-        <table class="table" id="vendas">
+        <table class="table" id="vendas table-hover">
             <thead class="prevent-select">
                 <tr>
                     <th style="padding-bottom: 18px;">Código do vendedor</th>
@@ -77,7 +74,8 @@
             <tbody id="vendasTableBody"></tbody>
         </table>
         
-        <button id="btnCaminhao" class="truck-button" onclick="infoRelatorio()">
+        <!-- botão do caminhao -->
+        <button id="btnCaminhao" class="truck-button mt-3" onclick="infoRelatorio()">
             <span class="default">Gerar relatório de vendas</span>
             <span class="success">
                 Abrir relatório de vendas
@@ -93,9 +91,7 @@
             </div>
         </button>
 
-        <script src='https://cdn.jsdelivr.net/npm/gsap@3.0.1/dist/gsap.min.js'></script>
-        <script src="./caminhao.js"></script>
-
+        
         <!-- modal Add -->
         <div id="modalAdicionarContato" class="modal">
             <div class="modal-dialog">
@@ -103,7 +99,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Adicionar nova venda</h5>
                         <button type="button" class="close" id="closeModal"
-                            onclick="modalAdd.style.display = 'none'">&times;</button>
+                        onclick="modalAdd.style.display = 'none'">&times;</button>
                     </div>
                     <div class="modal-body">
                         <p>Formulário para adicionar venda.</p>
@@ -129,7 +125,49 @@
                                 <input type="number" class="form-control" id="valorVenda" required>
                             </div>
                             <div class="text-center"><button type="submit" class="btn btn-primary">Salvar
-                                    Contato</button></div>
+                                Contato</button></div>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- modal Editar -->
+        <div class="modal" id="modalEditar">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar contato</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden = "true" onclick="modalEditar.style.display = 'none'">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Formulário para adicionar venda.</p>
+                        <form id="formAdicionarContato" class="text-left">
+                            <div class="form-group">
+                                <label for="codVendedor">Código do vendedor:</label>
+                                <input type="number" class="form-control" id="codVendedor" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nome">Nome:</label>
+                                <input type="text" class="form-control" id="nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cargo">Cargo:</label>
+                                <input type="text" class="form-control" id="cargo" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="codVenda">Código da venda:</label>
+                                <input type="number" class="form-control" id="codVenda" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="valorVenda">Valor venda:</label>
+                                <input type="number" class="form-control" id="valorVenda" required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary" onsubmit="salvarVendaEditada()">Salvar Contato</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -147,7 +185,7 @@
                     left: 0;
                     z-index: 2;">
         </div>
-
+        
     </main>
 
     <script>
@@ -159,7 +197,7 @@
                 codVenda: '01',
                 valorVenda: '30000'
             },
-
+            
             {
                 codVendedor: '02',
                 nomeVendedor: 'Gimli, filho de Glóin',
@@ -167,7 +205,7 @@
                 codVenda: '03',
                 valorVenda: '80'
             },
-
+            
             {
                 codVendedor: '01',
                 nomeVendedor: 'Leonardo Brito Gomes',
@@ -179,13 +217,14 @@
 
         //documents
         const modalAdd = document.getElementById("modalAdicionarContato")
+        const modalEditar = document.getElementById('modalEditar')
         const form = document.getElementById("formAdicionarContato")
         const btnCaminhao = document.getElementById("btnCaminhao")
-
+        
         //vendas
         function renderizarTabelaVendas() {
             let vendasTableBody = document.getElementById('vendasTableBody')
-
+            
             vendasTableBody.innerHTML = ''
             vendas.forEach((venda, index) => {
                 venda.valorVenda = parseFloat(venda.valorVenda) //formatar dinheiro
@@ -193,10 +232,10 @@
                     style: 'currency',
                     currency: 'BRL'
                 })
-
+                
                 venda.codVendedor = venda.codVendedor.padStart(2, '0') //formatar numeros
                 venda.codVenda = venda.codVenda.padStart(2, '0')
-
+                
                 vendasTableBody.innerHTML += `
                         <tr>
                             <td style="padding-top: 20px;">${venda.codVendedor}</td>
@@ -204,21 +243,29 @@
                             <td style="padding-top: 20px;">${venda.cargo}</td>
                             <td style="padding-top: 20px;">${venda.codVenda}</td>
                             <td style="padding-top: 20px;">${valorVendaFormatado}</td>
-                            <td><button type="button" class="btn btn-primary text-center">Editar</button></td>
+                            <td>
+                                <button type="button" 
+                                        class="btn btn-primary text-center"
+                                        data-toggle="modal"
+                                        data-target="modalEditar"
+                                        onclick="mostrarModalEditar(${index})">
+                                    Editar
+                                </button>
+                            </td>
                         </tr>
                         `
-            })
+                    })
         }
 
         function adicionarVenda() {
             event.preventDefault();
-
+            
             let codVendedor = document.getElementById("codVendedor").value
             let nomeVendedor = document.getElementById("nome").value
             let cargo = document.getElementById("cargo").value
             let codVenda = document.getElementById("codVenda").value
             let valorVenda = document.getElementById("valorVenda").value
-
+            
             let venda = {
                 codVendedor,
                 nomeVendedor,
@@ -229,27 +276,36 @@
 
             vendas.push(venda)
             form.reset()
-
+            
             renderizarTabelaVendas()
             modalAdd.style.display = 'none'
+        }
+
+        //editar venda
+        function mostrarModalEditar(index) {
+            modalEditar.style.display = 'block'
+        }
+
+        function salvarVendaEditada() {
+            modalEditar.style.display = 'none'
         }
 
         //relatorio
         function infoRelatorio() {
             let vendedores = []
-
+            
             let codAdd = []
-
+            
             vendas.forEach(venda => {
                 if (codAdd.includes(venda.codVendedor)) { //caso adicionado
                     vendedores.forEach(vendedor => {
                         if (vendedor.nome === venda.nomeVendedor) {
                             vendedor.totalVendas += venda.valorVenda
-
+                            
                             if (venda.valorVenda > vendedor.maiorVenda) {
                                 vendedor.maiorVenda = venda.valorVenda
                             }
-
+                            
                             if (vendedor.cargo === 'Júnior') {
                                 vendedor.comissao = vendedor.totalVendas * 0.01
                             } else if (vendedor.cargo === 'Pleno') {
@@ -259,13 +315,13 @@
                             }
                         }
                     })
-
+                    
                 } else { //caso n tenha sido adicionado ainda
                     let nome = venda.nomeVendedor
                     let cargo = venda.cargo
                     let totalVendas = parseFloat(venda.valorVenda)
                     let maiorVenda = parseFloat(venda.valorVenda)
-
+                    
                     if (cargo === 'Júnior') {
                         comissao = totalVendas * 0.01
                     } else if (cargo === 'Pleno') {
@@ -273,7 +329,7 @@
                     } else {
                         comissao = totalVendas * 0.03
                     }
-
+                    
                     vendedor = {
                         nome,
                         cargo,
@@ -287,24 +343,27 @@
                 }
             })
 
-            btnCaminhao.addEventListener('click', function() {
-                if(btnCaminhao.classList.contains('podePassar')){
+            btnCaminhao.addEventListener('click', function() { //página do relatório
+                if(!btnCaminhao.classList.contains('animation')){
                     window.open("relatório.html", '_blank')
-                    btnCaminhao.classList.remove('podePassar')
                 }
             })
 
             //sorting
             vendedores.sort((a, b) => b.totalVendas - a.totalVendas);
 
-
+            
             localStorage.setItem("vendedoresArr", JSON.stringify(vendedores)) //mandar para próxima página
         }
 
         //eventos
         form.addEventListener('submit', adicionarVenda)
-
+        
         window.addEventListener('DOMContentLoaded', renderizarTabelaVendas)
-    </script>
+        </script>
+
+        <!-- scripts caminhao -->
+        <script src='https://cdn.jsdelivr.net/npm/gsap@3.0.1/dist/gsap.min.js'></script>
+        <script src="caminhao/caminhao.js"></script>
 </body>
 </html>
