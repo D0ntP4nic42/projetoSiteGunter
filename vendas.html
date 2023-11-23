@@ -16,7 +16,6 @@
 
     <style>
         header {
-            background-color: whitesmoke;
             display: flex;
             align-items: baseline;
             justify-content: center;
@@ -59,7 +58,7 @@
     </header>
 
     <main class="text-center mt-2">
-        <table class="table" id="vendas table-hover">
+        <table class="table table-hover" id="vendas">
             <thead class="prevent-select">
                 <tr>
                     <th style="padding-bottom: 18px;">Código do vendedor</th>
@@ -124,8 +123,7 @@
                                 <label for="valorVenda">Valor venda:</label>
                                 <input type="number" class="form-control" id="valorVenda" required>
                             </div>
-                            <div class="text-center"><button type="submit" class="btn btn-primary">Salvar
-                                Contato</button></div>
+                            <div class="text-center"><button type="submit" class="btn btn-primary">Salvar venda</button></div>
                             </form>
                     </div>
                 </div>
@@ -139,12 +137,12 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Editar contato</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden = "true" onclick="modalEditar.style.display = 'none'">&times;</span>
+                                <span aria-hidden = "true" onclick="modalEditar.style.display = 'none', overlay.style.display = 'none'">&times;</span>
                             </button>
                     </div>
                     <div class="modal-body">
                         <p>Formulário para adicionar venda.</p>
-                        <form id="formAdicionarContato" class="text-left">
+                        <form id="formAdicionarContato" class="text-left" onsubmit="salvarVendaEditada()">
                             <div class="form-group">
                                 <label for="codVendedor">Código do vendedor:</label>
                                 <input type="number" class="form-control" id="codVendedor" required>
@@ -166,7 +164,7 @@
                                 <input type="number" class="form-control" id="valorVenda" required>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary" onsubmit="salvarVendaEditada()">Salvar Contato</button>
+                                <button type="submit" class="btn btn-primary">Salvar venda</button>
                             </div>
                         </form>
                     </div>
@@ -220,6 +218,7 @@
         const modalEditar = document.getElementById('modalEditar')
         const form = document.getElementById("formAdicionarContato")
         const btnCaminhao = document.getElementById("btnCaminhao")
+        const overlay = document.getElementById("overlay")
         
         //vendas
         function renderizarTabelaVendas() {
@@ -248,7 +247,7 @@
                                         class="btn btn-primary text-center"
                                         data-toggle="modal"
                                         data-target="modalEditar"
-                                        onclick="mostrarModalEditar(${index})">
+                                        onclick="overlay.style.display = 'block', editarContato(${index})">
                                     Editar
                                 </button>
                             </td>
@@ -282,12 +281,19 @@
         }
 
         //editar venda
-        function mostrarModalEditar(index) {
+        function editarContato(index) {
             modalEditar.style.display = 'block'
+
+            let vendedor = {
+                nome: vendedores[index].nomeVendedor
+            }
+
+            salvarVendaEditada(vendedor, index)
         }
 
         function salvarVendaEditada() {
             modalEditar.style.display = 'none'
+            overlay.style.display = 'none'
         }
 
         //relatorio

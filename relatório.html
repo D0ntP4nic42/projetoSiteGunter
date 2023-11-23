@@ -13,7 +13,6 @@
 
     <style>
         header {
-            background-color: whitesmoke;
             display: flex;
             align-items: baseline;
             justify-content: center;
@@ -46,30 +45,27 @@
         <h6>.LTDA</h6>
     </header>
 
-    <main>
-        <div id="relatorioVendas" class="mt-4">
-            <table class="table table-hover">
-                <thead class="prevent-select">
-                    <tr>
-                        <th>Nome</th>
-                        <th>Cargo</th>
-                        <th>Total de vendas</th>
-                        <th>Maior venda</th>
-                        <th>Comissão</th>
-                    </tr>
-                </thead>
-                <tbody id="relatorioTableBody"></tbody>
-            </table>
-        </div>
+    <main class="text-center">
+        <table class="table table-hover" id="relatorioVendas">
+            <thead class="prevent-select">
+                <tr>
+                    <th>Nome</th>
+                    <th>Cargo</th>
+                    <th>Total de vendas</th>
+                    <th>Maior venda</th>
+                    <th>Comissão</th>
+                </tr>
+            </thead>
+            <tbody id="relatorioTableBody"></tbody>
+        </table>
     </main>
 
     <script>
         let vendedores = JSON.parse(localStorage.getItem('vendedoresArr'))
 
-        const relatorioVendas = document.getElementById("relatorioVendas")
         const relatorioVendasBody = document.getElementById("relatorioTableBody")
 
-        
+
         function gerarRelatorio() {
             vendedores.forEach(vendedor => {
                 vendedor.totalVendas = vendedor.totalVendas.toLocaleString('pt-BR', {
