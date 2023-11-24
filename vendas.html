@@ -46,12 +46,16 @@
         }
 
         main {
-            width: 960px;
+            width: 980px;
             margin: auto;
         }
 
         .table {
             color: var(--cor-primaria);
+        }
+
+        .table thead th {
+            border-top: 0px;
         }
 
         .modal {
@@ -83,6 +87,14 @@
             user-select: none;
         }
 
+        .btnApagar {
+            background-color: #0b1e0f;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--cor-primaria);
+        } 
+
         footer {
             background-color: var(--cor-terciaria);
             position: fixed;
@@ -95,7 +107,7 @@
 <body>
     <header class="text-center pt-3 pb-3 prevent-select">
         <h1><strong>Consórsios</strong>.LTDA</h1>
-        
+
 
         <nav class="nav justify-content-center">
             <a class="nav-link" href="#" target="_blank">Sobre nós</a>
@@ -114,7 +126,8 @@
                     <th style="padding-bottom: 18px;">Código da venda</th>
                     <th style="padding-bottom: 18px;">Valor da venda</th>
                     <th><button type="button" class="btn btn-primary text-center"
-                            onclick="modalAdd.style.display = 'block', overlay.style.display = 'block'">+Adicionar</button></th>
+                            onclick="modalAdd.style.display = 'block', overlay.style.display = 'block'">+Adicionar</button>
+                    </th>
                 </tr>
             </thead>
             <tbody id="vendasTableBody"></tbody>
@@ -151,7 +164,7 @@
                     <div class="modal-body">
                         <p>Formulário para adicionar venda.</p>
                         <form id="formAdicionarContato" class="text-left">
-                            <div class="form-group">
+                            <div class="formCriar-group">
                                 <label for="codVendedor">Código do vendedor:</label>
                                 <input type="number" class="form-control" id="codVendedor" required>
                             </div>
@@ -192,29 +205,33 @@
                     </div>
                     <div class="modal-body">
                         <p>Formulário para editar venda.</p>
-                        <form id="formAdicionarContato" class="text-left" onsubmit="salvarVendaEditada()">
+                        <form id="formEditarContato" class="text-left">
                             <div class="form-group">
-                                <label for="codVendedor">Código do vendedor:</label>
-                                <input type="number" class="form-control" id="codVendedor" required>
+                                <label for="codVendedorEditar">Código do vendedor:</label>
+                                <input type="number" class="form-control" id="codVendedorEditar" required>
                             </div>
                             <div class="form-group">
-                                <label for="nome">Nome:</label>
-                                <input type="text" class="form-control" id="nome" required>
+                                <label for="nomeEditar">Nome:</label>
+                                <input type="text" class="form-control" id="nomeEditar" required>
                             </div>
                             <div class="form-group">
-                                <label for="cargo">Cargo:</label>
-                                <input type="text" class="form-control" id="cargo" required>
+                                <label for="cargoEditar">Cargo:</label>
+                                <input type="text" class="form-control" id="cargoEditar" required>
                             </div>
                             <div class="form-group">
-                                <label for="codVenda">Código da venda:</label>
-                                <input type="number" class="form-control" id="codVenda" required>
+                                <label for="codVendaEditar">Código da venda:</label>
+                                <input type="number" class="form-control" id="codVendaEditar" required>
                             </div>
                             <div class="form-group">
-                                <label for="valorVenda">Valor venda:</label>
-                                <input type="number" class="form-control" id="valorVenda" required>
+                                <label for="valorVendaEditar">Valor venda:</label>
+                                <input type="number" class="form-control" id="valorVendaEditar" required>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary">Salvar venda</button>
+                                <button type="button" id="btnSalvarEdicao" class="btn btn-primary" 
+                                        onclick="modalEditar.style.display = 'none',
+                                        overlay.style.display = 'none'">
+                                    Salvar venda
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -222,13 +239,13 @@
             </div>
         </div>
 
-        
+
     </main>
-    
+
     <footer class="pt-3 pb-3">
 
     </footer>
-    
+
     <!-- overlay -->
     <div id="overlay" style="
                 height: 100%;
@@ -242,38 +259,25 @@
     </div>
 
     <script>
-        let vendas = [
-            {
-                codVendedor: '01',
-                nomeVendedor: 'Leonardo Brito Gomes',
-                cargo: 'Pleno',
-                codVenda: '01',
-                valorVenda: '30000'
-            },
-
-            {
-                codVendedor: '02',
-                nomeVendedor: 'Gimli, filho de Glóin',
-                cargo: 'Júnior',
-                codVenda: '03',
-                valorVenda: '80'
-            },
-
-            {
-                codVendedor: '01',
-                nomeVendedor: 'Leonardo Brito Gomes',
-                cargo: 'Pleno',
-                codVenda: '02',
-                valorVenda: '200'
-            }
-        ]
+        let vendas = []
 
         //documents
         const modalAdd = document.getElementById("modalAdicionarContato")
         const modalEditar = document.getElementById('modalEditar')
-        const form = document.getElementById("formAdicionarContato")
+        const formCriar = document.getElementById("formAdicionarContato")
+        const formAtualizar = document.getElementById("formEditarContato")
+        const btnSalvarEdicao = document.getElementById("btnSalvarEdicao")
         const btnCaminhao = document.getElementById("btnCaminhao")
         const overlay = document.getElementById("overlay")
+
+        function buscarVendas() {
+            fetch('http://localhost:5000/vendas')
+                .then(response => response.json())
+                .then(dados => {
+                    vendas = dados
+                    renderizarTabelaVendas()
+                })
+        }
 
         //vendas
         function renderizarTabelaVendas() {
@@ -297,13 +301,14 @@
                             <td style="padding-top: 20px;">${venda.cargo}</td>
                             <td style="padding-top: 20px;">${venda.codVenda}</td>
                             <td style="padding-top: 20px;">${valorVendaFormatado}</td>
-                            <td>
+                            <td style="display: flex;">
                                 <button type="button" 
-                                        class="btn btn-primary text-center"
-                                        data-toggle="modal"
-                                        data-target="modalEditar"
+                                        class="btn btn-primary text-center" style="display: inline;"
                                         onclick="overlay.style.display = 'block', editarContato(${index})">
                                     Editar
+                                </button>
+                                <button type="button" class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarContato(${index})"">
+                                    Deletar
                                 </button>
                             </td>
                         </tr>
@@ -311,7 +316,7 @@
             })
         }
 
-        function adicionarVenda() {
+        function adicionarVenda(event) {
             event.preventDefault();
 
             let codVendedor = document.getElementById("codVendedor").value
@@ -328,27 +333,61 @@
                 valorVenda
             }
 
-            vendas.push(venda)
-            form.reset()
-
-            renderizarTabelaVendas()
+            fetch('http://localhost:5000/vendas',{
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(venda)
+            }).then(() => {
+                buscarVendas()
+            })
+            
             modalAdd.style.display = 'none'
+            overlay.style.display = 'none'
+            formCriar.reset()
         }
 
         //editar venda
         function editarContato(index) {
             modalEditar.style.display = 'block'
 
-            let vendedor = {
-                nome: vendedores[index].nomeVendedor
-            }
+            let venda = vendas[index]
 
-            salvarVendaEditada(vendedor, index)
+            document.getElementById('codVendedorEditar').value = venda.codVendedor
+            document.getElementById('nomeEditar').value = venda.nomeVendedor
+            document.getElementById('cargoEditar').value = venda.cargo
+            document.getElementById('codVendaEditar').value = venda.codVenda
+            document.getElementById('valorVendaEditar').value = venda.valorVenda
+
+            
+            
+            btnSalvarEdicao.addEventListener('click', function() {
+                venda = {
+                    codVendedor: document.getElementById('codVendedorEditar').value,
+                    nomeVendedor: document.getElementById('nomeEditar').value,
+                    cargo: document.getElementById('cargoEditar').value,
+                    codVenda: document.getElementById('codVendaEditar').value,
+                    valorVenda: document.getElementById('valorVendaEditar').value
+                }
+
+                fetch(`http://localhost:5000/vendas/${index}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(venda)
+                }).then(() => {
+                    buscarVendas()
+                })
+            })
         }
 
-        function salvarVendaEditada() {
-            modalEditar.style.display = 'none'
-            overlay.style.display = 'none'
+        //deletar venda
+        function apagarContato(index) {
+            const resultado = confirm('Tem certeza que deseja apgar o contato')
+            fetch(`http://localhost:5000/vendas/${index}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            }).then(() => {
+                buscarVendas()
+            })
         }
 
         //relatorio
@@ -418,9 +457,10 @@
         }
 
         //eventos
-        form.addEventListener('submit', adicionarVenda)
+        formCriar.addEventListener('submit', adicionarVenda)
 
-        window.addEventListener('DOMContentLoaded', renderizarTabelaVendas)
+
+        window.addEventListener('DOMContentLoaded', buscarVendas)
     </script>
 
     <!-- scripts caminhao -->
