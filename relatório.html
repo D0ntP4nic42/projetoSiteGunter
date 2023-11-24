@@ -14,8 +14,9 @@
     <style>
         :root {
             --cor-primaria: #4E9F3D;
-            --cor-fundo: #191A19;
+            --cor-fundo: white;
             --cor-secundaria: #1E5128;
+            --cor-terciaria: #A6CF98;
         }
 
         body {
@@ -30,11 +31,27 @@
         header {
             display: flex;
             align-items: baseline;
-            justify-content: center;
+            justify-content: space-around;
+            background-color: var(--cor-terciaria);
+            color: var(--cor-secundaria);
         }
 
         h1 {
             font-family: Helvetica, sans-serif;
+            font-size: 18px;
+        }
+
+        strong {
+            font-size: 30px;
+        }
+
+        .nav-link {
+            color: var(--cor-secundaria);
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            color: var(--cor-primaria);
         }
 
         main {
@@ -44,19 +61,29 @@
 
         .prevent-select {
             -webkit-user-select: none;
-            /* Safari */
             -ms-user-select: none;
-            /* IE 10 and IE 11 */
             user-select: none;
-            /* Standard syntax */
+        }
+
+        footer {
+            background-color: var(--cor-terciaria);
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 
 <body>
     <header class="text-center pt-3 pb-3 prevent-select">
-        <h1>Consórsios</h1>
-        <h6>.LTDA</h6>
+        <h1><strong>Consórsios</strong>.LTDA</h1>
+    
+    
+        <nav class="nav justify-content-center">
+            <a class="nav-link" href="#" target="_blank">Sobre nós</a>
+            <a class="nav-link" href="#" target="_blank">Ajuda</a>
+            <a class="nav-link" href="#" target="_blank">Parceiros</a>
+        </nav>
     </header>
 
     <main class="text-center">
@@ -73,6 +100,10 @@
             <tbody id="relatorioTableBody"></tbody>
         </table>
     </main>
+
+    <footer class="pt-3 pb-3">
+    
+    </footer>
 
     <script>
         let vendedores = JSON.parse(localStorage.getItem('vendedoresArr'))
