@@ -12,6 +12,21 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <style>
+        :root {
+            --cor-primaria: #4E9F3D;
+            --cor-fundo: #191A19;
+            --cor-secundaria: #1E5128;
+        }
+
+        body {
+            background-color: var(--cor-fundo);
+            color: var(--cor-primaria);
+        }
+
+        .table {
+            color: var(--cor-primaria);
+        }
+
         header {
             display: flex;
             align-items: baseline;
@@ -25,7 +40,6 @@
         main {
             width: 960px;
             margin: auto;
-            background-color: white;
         }
 
         .prevent-select {

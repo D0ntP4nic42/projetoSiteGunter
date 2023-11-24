@@ -9,26 +9,49 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
     <!-- style caminhao -->
     <link rel="stylesheet" href="caminhao/caminhao.css">
 
     <style>
+        :root {
+            --cor-primaria: #4E9F3D;
+            --cor-fundo: white;
+            --cor-secundaria: #1E5128;
+            --cor-terciaria: #A6CF98;
+        }
+
+        body {
+            background-color: var(--cor-fundo);
+            color: var(--cor-primaria);
+            margin-bottom: 3rem;
+        }
+
         header {
             display: flex;
             align-items: baseline;
-            justify-content: center;
+            justify-content: space-around;
+            background-color: var(--cor-terciaria);
+            color: var(--cor-secundaria);
         }
 
         h1 {
             font-family: Helvetica, sans-serif;
+            font-size: 18px;
+        }
+
+        strong {
+            font-size: 30px;
         }
 
         main {
             width: 960px;
             margin: auto;
-            background-color: white;
+        }
+
+        .table {
+            color: var(--cor-primaria);
         }
 
         .modal {
@@ -40,21 +63,45 @@
             display: none;
         }
 
+        .btn {
+            background-color: var(--cor-secundaria);
+            border-color: var(--cor-secundaria);
+        }
+
+        .nav-link {
+            color: var(--cor-secundaria);
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            color: var(--cor-primaria);
+        }
+
         .prevent-select {
             -webkit-user-select: none;
-            /* Safari */
             -ms-user-select: none;
-            /* IE 10 and IE 11 */
             user-select: none;
-            /* Standard syntax */
+        }
+
+        footer {
+            background-color: var(--cor-terciaria);
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 
 <body>
     <header class="text-center pt-3 pb-3 prevent-select">
-        <h1>Consórsios</h1>
-        <h6>.LTDA</h6>
+        <h1><strong>Consórsios</strong>.LTDA</h1>
+        
+
+        <nav class="nav justify-content-center">
+            <a class="nav-link" href="#" target="_blank">Sobre nós</a>
+            <a class="nav-link" href="#" target="_blank">Ajuda</a>
+            <a class="nav-link" href="#" target="_blank">Parceiros</a>
+        </nav>
     </header>
 
     <main class="text-center mt-2">
@@ -67,14 +114,14 @@
                     <th style="padding-bottom: 18px;">Código da venda</th>
                     <th style="padding-bottom: 18px;">Valor da venda</th>
                     <th><button type="button" class="btn btn-primary text-center"
-                            onclick="modalAdd.style.display = 'block'">+Adicionar</button></th>
+                            onclick="modalAdd.style.display = 'block', overlay.style.display = 'block'">+Adicionar</button></th>
                 </tr>
             </thead>
             <tbody id="vendasTableBody"></tbody>
         </table>
-        
+
         <!-- botão do caminhao -->
-        <button id="btnCaminhao" class="truck-button mt-3" onclick="infoRelatorio()">
+        <button id="btnCaminhao" class="truck-button mt-3 mb-3" onclick="infoRelatorio()">
             <span class="default">Gerar relatório de vendas</span>
             <span class="success">
                 Abrir relatório de vendas
@@ -90,7 +137,8 @@
             </div>
         </button>
 
-        
+
+
         <!-- modal Add -->
         <div id="modalAdicionarContato" class="modal">
             <div class="modal-dialog">
@@ -98,7 +146,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Adicionar nova venda</h5>
                         <button type="button" class="close" id="closeModal"
-                        onclick="modalAdd.style.display = 'none'">&times;</button>
+                            onclick="modalAdd.style.display = 'none', document.getElementById('overlay').style.display = 'none'">&times;</button>
                     </div>
                     <div class="modal-body">
                         <p>Formulário para adicionar venda.</p>
@@ -123,8 +171,9 @@
                                 <label for="valorVenda">Valor venda:</label>
                                 <input type="number" class="form-control" id="valorVenda" required>
                             </div>
-                            <div class="text-center"><button type="submit" class="btn btn-primary">Salvar venda</button></div>
-                            </form>
+                            <div class="text-center"><button type="submit" class="btn btn-primary">Salvar venda</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -135,13 +184,14 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Editar contato</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden = "true" onclick="modalEditar.style.display = 'none', overlay.style.display = 'none'">&times;</span>
-                            </button>
+                        <h5 class="modal-title">Editar venda</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"
+                                onclick="modalEditar.style.display = 'none', overlay.style.display = 'none'">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
-                        <p>Formulário para adicionar venda.</p>
+                        <p>Formulário para editar venda.</p>
                         <form id="formAdicionarContato" class="text-left" onsubmit="salvarVendaEditada()">
                             <div class="form-group">
                                 <label for="codVendedor">Código do vendedor:</label>
@@ -172,19 +222,24 @@
             </div>
         </div>
 
-        <!-- overlay -->
-        <div id="overlay" style="
-                    height: 100%;
-                    width: 100%;
-                    background-color: rgb(0, 0, 0, 0.5);
-                    display: none;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    z-index: 2;">
-        </div>
         
     </main>
+    
+    <footer class="pt-3 pb-3">
+
+    </footer>
+    
+    <!-- overlay -->
+    <div id="overlay" style="
+                height: 100%;
+                width: 100%;
+                background-color: rgb(0, 0, 0, 0.5);
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 2;">
+    </div>
 
     <script>
         let vendas = [
@@ -195,7 +250,7 @@
                 codVenda: '01',
                 valorVenda: '30000'
             },
-            
+
             {
                 codVendedor: '02',
                 nomeVendedor: 'Gimli, filho de Glóin',
@@ -203,7 +258,7 @@
                 codVenda: '03',
                 valorVenda: '80'
             },
-            
+
             {
                 codVendedor: '01',
                 nomeVendedor: 'Leonardo Brito Gomes',
@@ -219,11 +274,11 @@
         const form = document.getElementById("formAdicionarContato")
         const btnCaminhao = document.getElementById("btnCaminhao")
         const overlay = document.getElementById("overlay")
-        
+
         //vendas
         function renderizarTabelaVendas() {
             let vendasTableBody = document.getElementById('vendasTableBody')
-            
+
             vendasTableBody.innerHTML = ''
             vendas.forEach((venda, index) => {
                 venda.valorVenda = parseFloat(venda.valorVenda) //formatar dinheiro
@@ -231,10 +286,10 @@
                     style: 'currency',
                     currency: 'BRL'
                 })
-                
+
                 venda.codVendedor = venda.codVendedor.padStart(2, '0') //formatar numeros
                 venda.codVenda = venda.codVenda.padStart(2, '0')
-                
+
                 vendasTableBody.innerHTML += `
                         <tr>
                             <td style="padding-top: 20px;">${venda.codVendedor}</td>
@@ -253,18 +308,18 @@
                             </td>
                         </tr>
                         `
-                    })
+            })
         }
 
         function adicionarVenda() {
             event.preventDefault();
-            
+
             let codVendedor = document.getElementById("codVendedor").value
             let nomeVendedor = document.getElementById("nome").value
             let cargo = document.getElementById("cargo").value
             let codVenda = document.getElementById("codVenda").value
             let valorVenda = document.getElementById("valorVenda").value
-            
+
             let venda = {
                 codVendedor,
                 nomeVendedor,
@@ -275,7 +330,7 @@
 
             vendas.push(venda)
             form.reset()
-            
+
             renderizarTabelaVendas()
             modalAdd.style.display = 'none'
         }
@@ -299,19 +354,19 @@
         //relatorio
         function infoRelatorio() {
             let vendedores = []
-            
+
             let codAdd = []
-            
+
             vendas.forEach(venda => {
                 if (codAdd.includes(venda.codVendedor)) { //caso adicionado
                     vendedores.forEach(vendedor => {
                         if (vendedor.nome === venda.nomeVendedor) {
                             vendedor.totalVendas += venda.valorVenda
-                            
+
                             if (venda.valorVenda > vendedor.maiorVenda) {
                                 vendedor.maiorVenda = venda.valorVenda
                             }
-                            
+
                             if (vendedor.cargo === 'Júnior') {
                                 vendedor.comissao = vendedor.totalVendas * 0.01
                             } else if (vendedor.cargo === 'Pleno') {
@@ -321,13 +376,13 @@
                             }
                         }
                     })
-                    
+
                 } else { //caso n tenha sido adicionado ainda
                     let nome = venda.nomeVendedor
                     let cargo = venda.cargo
                     let totalVendas = parseFloat(venda.valorVenda)
                     let maiorVenda = parseFloat(venda.valorVenda)
-                    
+
                     if (cargo === 'Júnior') {
                         comissao = totalVendas * 0.01
                     } else if (cargo === 'Pleno') {
@@ -335,7 +390,7 @@
                     } else {
                         comissao = totalVendas * 0.03
                     }
-                    
+
                     vendedor = {
                         nome,
                         cargo,
@@ -349,8 +404,8 @@
                 }
             })
 
-            btnCaminhao.addEventListener('click', function() { //página do relatório
-                if(!btnCaminhao.classList.contains('animation')){
+            btnCaminhao.addEventListener('click', function () { //página do relatório
+                if (!btnCaminhao.classList.contains('animation')) {
                     window.open("relatório.html", '_blank')
                 }
             })
@@ -358,18 +413,19 @@
             //sorting
             vendedores.sort((a, b) => b.totalVendas - a.totalVendas);
 
-            
+
             localStorage.setItem("vendedoresArr", JSON.stringify(vendedores)) //mandar para próxima página
         }
 
         //eventos
         form.addEventListener('submit', adicionarVenda)
-        
-        window.addEventListener('DOMContentLoaded', renderizarTabelaVendas)
-        </script>
 
-        <!-- scripts caminhao -->
-        <script src='https://cdn.jsdelivr.net/npm/gsap@3.0.1/dist/gsap.min.js'></script>
-        <script src="caminhao/caminhao.js"></script>
+        window.addEventListener('DOMContentLoaded', renderizarTabelaVendas)
+    </script>
+
+    <!-- scripts caminhao -->
+    <script src='https://cdn.jsdelivr.net/npm/gsap@3.0.1/dist/gsap.min.js'></script>
+    <script src="caminhao/caminhao.js"></script>
 </body>
+
 </html>

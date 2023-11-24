@@ -1,16 +1,16 @@
 .truck-button {
   --color: #fff;
-  --background: #007bff;
+  --background: #1E5128;
   --tick: #16BF78;
   --base: #0D0F18;
   --wheel: #2B3044;
   --wheel-inner: #646B8C;
   --wheel-dot: #fff;
-  --back: #6D58FF;
-  --back-inner: #362A89;
-  --back-inner-shadow: #2D246B;
-  --front: #A6ACCD;
-  --front-shadow: #535A79;
+  --back: green;
+  --back-inner: #034318;
+  --back-inner-shadow: rgb(6, 48, 18);
+  --front: #D8E9A8;
+  --front-shadow: #D8E9A8;
   --front-light: #FFF8B1;
   --window: #2B3044;
   --window-shadow: #404660;
