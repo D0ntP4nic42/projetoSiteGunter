@@ -291,7 +291,9 @@
                     currency: 'BRL'
                 })
 
+                venda.codVendedor = venda.codVendedor.toString()
                 venda.codVendedor = venda.codVendedor.padStart(3, '0') //formatar numeros
+                venda.codVenda = venda.codVenda.toString()
                 venda.codVenda = venda.codVenda.padStart(3, '0')
 
                 //formatarCargo
@@ -365,8 +367,6 @@
             document.getElementById('codVendaEditar').value = venda.codVenda
             document.getElementById('valorVendaEditar').value = venda.valorVenda
 
-            
-            
             btnSalvarEdicao.addEventListener('click', function() {
                 venda = {
                     codVendedor: document.getElementById('codVendedorEditar').value,
