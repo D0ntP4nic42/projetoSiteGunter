@@ -46,8 +46,8 @@ function adicionarVenda(req, res) {
     req.on('end', () => {
         let venda = JSON.parse(body)
         
-        const sql = "INSERT INTO vendas (codVendedor, nomeVendedor, cargo, codVenda, valorVenda) VALUES (?, ?, ?, ?, ?)";
-        const values = [venda.codVendedor, venda.nomeVendedor, venda.cargo, venda.codVenda, venda.valorVenda];
+        const sql = "INSERT INTO vendas (codVendedor, nomeVendedor, cargoVendedor, codVenda, valorVenda) VALUES (?, ?, ?, ?, ?)";
+        const values = [venda.codVendedor, venda.nomeVendedor, venda.cargoVendedor, venda.codVenda, venda.valorVenda];
         
         bd.run(sql, values, function (err) {
             if (err) {
@@ -85,8 +85,8 @@ function editarVenda(req, res) {
     req.on('end', () => {
         let venda = JSON.parse(body)
 
-        const sql = "UPDATE vendas set codVendedor = ?, nomeVendedor = ?, cargo = ?, codVenda = ?, valorVenda = ? where id = ?";
-        const values = [venda.codVendedor, venda.nomeVendedor, venda.cargo, venda.codVenda, venda.valorVenda, idEditar];
+        const sql = "UPDATE vendas set codVendedor = ?, nomeVendedor = ?, cargoVendedor = ?, codVenda = ?, valorVenda = ? where id = ?";
+        const values = [venda.codVendedor, venda.nomeVendedor, venda.cargoVendedor, venda.codVenda, venda.valorVenda, idEditar];
 
         bd.run(sql, values, function (err) {
             if (err) {

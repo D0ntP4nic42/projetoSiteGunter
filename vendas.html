@@ -295,19 +295,19 @@
                 venda.codVenda = venda.codVenda.padStart(3, '0')
 
                 //formatarCargo
-                if (venda.cargo === 'junior') {
-                    venda.cargo = 'Júnior'
-                } else if (venda.cargo === 'pleno') {
-                    venda.cargo = 'Pleno'
+                if (venda.cargoVendedor === 'junior' || venda.cargoVendedor === 'Júnior' || venda.cargoVendedor === 'Junior') {
+                    venda.cargoVendedor = 'Júnior'
+                } else if (venda.cargoVendedor === 'pleno' || venda.cargoVendedor === 'Pleno') {
+                    venda.cargoVendedor = 'Pleno'
                 } else {
-                    venda.cargo = 'Sênior'
+                    venda.cargoVendedor = 'Sênior'
                 }
 
                 vendasTableBody.innerHTML += `
                         <tr>
                             <td style="padding-top: 20px;">${venda.codVendedor}</td>
                             <td style="padding-top: 20px;">${venda.nomeVendedor}</td>
-                            <td style="padding-top: 20px;">${venda.cargo}</td>
+                            <td style="padding-top: 20px;">${venda.cargoVendedor}</td>
                             <td style="padding-top: 20px;">${venda.codVenda}</td>
                             <td style="padding-top: 20px;">${valorVendaFormatado}</td>
                             <td style="display: flex;">
@@ -330,14 +330,14 @@
 
             let codVendedor = document.getElementById("codVendedor").value
             let nomeVendedor = document.getElementById("nome").value
-            let cargo = document.getElementById("cargo").value
+            let cargoVendedor = document.getElementById("cargo").value
             let codVenda = document.getElementById("codVenda").value
             let valorVenda = document.getElementById("valorVenda").value
 
             let venda = {
                 codVendedor,
                 nomeVendedor,
-                cargo,
+                cargoVendedor,
                 codVenda,
                 valorVenda
             }
@@ -361,7 +361,7 @@
 
             document.getElementById('codVendedorEditar').value = venda.codVendedor
             document.getElementById('nomeEditar').value = venda.nomeVendedor
-            document.getElementById('cargoEditar').value = venda.cargo
+            document.getElementById('cargoEditar').value = venda.cargoVendedor
             document.getElementById('codVendaEditar').value = venda.codVenda
             document.getElementById('valorVendaEditar').value = venda.valorVenda
 
@@ -371,7 +371,7 @@
                 venda = {
                     codVendedor: document.getElementById('codVendedorEditar').value,
                     nomeVendedor: document.getElementById('nomeEditar').value,
-                    cargo: document.getElementById('cargoEditar').value,
+                    cargoVendedor: document.getElementById('cargoEditar').value,
                     codVenda: document.getElementById('codVendaEditar').value,
                     valorVenda: document.getElementById('valorVendaEditar').value
                 }
@@ -386,7 +386,7 @@
 
         //deletar venda
         function apagarContato(index) {
-            const resultado = confirm('Tem certeza que deseja apgar o contato')
+            const resultado = confirm('Tem certeza que deseja apgar a venda')
             fetch(`http://localhost:5000/vendas/${vendas[index].id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
@@ -409,28 +409,28 @@
                                 vendedor.maiorVenda = venda.valorVenda
                             }
 
-                            if (vendedor.cargo === 'Júnior') {
+                            if (vendedor.cargoVendedor === 'Júnior') {
                                 vendedor.comissao = vendedor.totalVendas * 0.01
-                                vendedor.cargo = 'Júnior'
-                            } else if (vendedor.cargo === 'Pleno') {
+                                vendedor.cargoVendedor = 'Júnior'
+                            } else if (vendedor.cargoVendedor === 'Pleno') {
                                 vendedor.comissao = vendedor.totalVendas * 0.02
-                                vendedor.cargo = 'Pleno'
+                                vendedor.cargoVendedor = 'Pleno'
                             } else {
                                 vendedor.comissao = vendedor.totalVendas * 0.03
-                                vendedor.cargo = 'Sênior'
+                                vendedor.cargoVendedor = 'Sênior'
                             }
                         }
                     })
 
                 } else { //caso n tenha sido adicionado ainda
                     let nome = venda.nomeVendedor
-                    let cargo = venda.cargo
+                    let cargoVendedor = venda.cargoVendedor
                     let totalVendas = parseFloat(venda.valorVenda)
                     let maiorVenda = parseFloat(venda.valorVenda)
 
-                    if (cargo === 'Júnior') {
+                    if (cargoVendedor === 'Júnior') {
                         comissao = totalVendas * 0.01
-                    } else if (cargo === 'Pleno') {
+                    } else if (cargoVendedor === 'Pleno') {
                         comissao = totalVendas * 0.02
                     } else {
                         comissao = totalVendas * 0.03
@@ -438,7 +438,7 @@
 
                     vendedor = {
                         nome,
-                        cargo,
+                        cargoVendedor,
                         totalVendas,
                         maiorVenda,
                         comissao
