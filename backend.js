@@ -1,71 +1,140 @@
 const http = require('http')
+const sqlite = require('sqlite3').verbose()
 
-let vendas = [
-    {
-        codVendedor: '01',
-        nomeVendedor: 'Leonardo Brito Gomes',
-        cargo: 'Pleno',
-        codVenda: '01',
-        valorVenda: '30000'
-    },
-
-    {
-        codVendedor: '02',
-        nomeVendedor: 'Gimli, filho de Glóin',
-        cargo: 'Júnior',
-        codVenda: '03',
-        valorVenda: '80'
-    },
-
-    {
-        codVendedor: '01',
-        nomeVendedor: 'Leonardo Brito Gomes',
-        cargo: 'Pleno',
-        codVenda: '02',
-        valorVenda: '200'
-    }
-]
+let vendas = []
 
 //funções de manipulação
 function obterVendas(req, res) {
-    res.statusCode = 200
-    res.end(JSON.stringify(vendas))
+    const bd = new sqlite.Database('./vendas.sqlite3', function (err) { //abrir conexão
+        if (err) {
+            console.log("Erro: ", err)
+        } else {
+            console.log("Banco de dados estabelecido")
+        }
+    })
+
+    bd.all(`SELECT * FROM vendas`, [], (err, rows) => {
+        if(err){
+            throw err
+        }
+        vendas = rows
+        res.end(JSON.stringify(vendas))
+        res.statusCode = 200
+    })
+
+
+    bd.close((err) => { //fechar conexão
+        if (err) {
+            console.log("Erro: ", err)
+        } else {
+            console.log("Conexão fechada")
+        }
+    })
 }
 
 function adicionarVenda(req, res) {
+    const bd = new sqlite.Database('./vendas.sqlite3', function (err) { //abrir conexão
+        if(err) {
+            console.log("Erro: ", err)
+        } else {
+            console.log("Banco de dados estabelecido")
+        }
+    })
+
     let body = ''
     req.on('data', chunk => body += chunk.toString()) //parte por parte 'chunks' body é a junção deles
     req.on('end', () => {
         let venda = JSON.parse(body)
-        vendas.push(venda)
-        res.statusCode = 200
-        res.end(JSON.stringify(venda)) //avisar que salvou
+        
+        const sql = "INSERT INTO vendas (codVendedor, nomeVendedor, cargo, codVenda, valorVenda) VALUES (?, ?, ?, ?, ?)";
+        const values = [venda.codVendedor, venda.nomeVendedor, venda.cargo, venda.codVenda, venda.valorVenda];
+        
+        bd.run(sql, values, function (err) {
+            if (err) {
+                throw err
+            } else {
+                console.log('Venda adicionada!')
+                res.statusCode = 200
+                res.end(JSON.stringify(venda)) //avisar que salvou
+            }
+
+            bd.close((err) => { //fechar conexão
+                if (err) {
+                    console.log("Erro: ", err)
+                } else {
+                    console.log("Conexão fechada")
+                }
+            })
+        })
     })
+
 }
 
 function editarVenda(req, res) {
-    const indexParaEditar = req.url.split('/')[2]
+    const bd = new sqlite.Database('./vendas.sqlite3', function (err) { //abrir conexão
+        if (err) {
+            console.log("Erro: ", err)
+        } else {
+            console.log("Banco de dados estabelecido")
+        }
+    })
+
+    const idEditar = req.url.split('/')[2]
     let body = ''
     req.on('data', chunk => body += chunk.toString()) //parte por parte 'chunks' body é a junção deles
     req.on('end', () => {
         let venda = JSON.parse(body)
-        vendas[indexParaEditar] = venda
-        res.statusCode = 200
-        res.end(JSON.stringify(venda)) //avisar que salvou a edição
+
+        const sql = "UPDATE vendas set codVendedor = ?, nomeVendedor = ?, cargo = ?, codVenda = ?, valorVenda = ? where id = ?";
+        const values = [venda.codVendedor, venda.nomeVendedor, venda.cargo, venda.codVenda, venda.valorVenda, idEditar];
+
+        bd.run(sql, values, function (err) {
+            if (err) {
+                throw err
+            } else {
+                console.log('Venda alterada!')
+                res.statusCode = 200
+                res.end(JSON.stringify(venda)) //avisar que salvou
+            }
+
+            bd.close((err) => { //fechar conexão
+                if (err) {
+                    console.log("Erro: ", err)
+                } else {
+                    console.log("Conexão fechada")
+                }
+            })
+        })
     })
 }
 
-function apagarContato(req, res) {
-    const indexParaApagar = req.url.split('/')[2]
+function apagarVenda(req, res) {
+    const bd = new sqlite.Database('./vendas.sqlite3', function (err) { //abrir conexão
+        if (err) {
+            console.log("Erro: ", err)
+        } else {
+            console.log("Banco de dados estabelecido")
+        }
+    })
 
-    if(indexParaApagar > -1){
-        vendas.splice(indexParaApagar, 1)
+    const idApagar = req.url.split('/')[2]
+
+    if(idApagar > 0){
+        bd.all("DELETE FROM vendas WHERE id = (?)", [idApagar])
         res.statusCode = 200
         res.end(JSON.stringify({ mensagem: "apagado com sucesso" }))
     } else {
         res.statusCode = 404
         res.end(JSON.stringify({ mensagem: "indice não encontrado"}))
     }
+
+    bd.close((err) => { //fechar conexão
+        if (err) {
+            console.log("Erro: ", err)
+        } else {
+            console.log("Conexão fechada")
+        }
+    })
 }
 
 //montar server
@@ -90,7 +159,7 @@ const servidorWEB = http.createServer(function (req, res) {
     } else if (req.url.startsWith('/vendas/') && req.method === 'PUT') {
         editarVenda(req, res)
     } else if (req.url.startsWith('/vendas/') && req.method === 'DELETE') {
-        apagarContato(req, res)
+        apagarVenda(req, res)
     } else {
         res.statusCode = 404
         res.end(JSON.stringify({ mensagem: "rota não encontrada" }))

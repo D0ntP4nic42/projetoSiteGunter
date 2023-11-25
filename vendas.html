@@ -291,8 +291,17 @@
                     currency: 'BRL'
                 })
 
-                venda.codVendedor = venda.codVendedor.padStart(2, '0') //formatar numeros
-                venda.codVenda = venda.codVenda.padStart(2, '0')
+                venda.codVendedor = venda.codVendedor.padStart(3, '0') //formatar numeros
+                venda.codVenda = venda.codVenda.padStart(3, '0')
+
+                //formatarCargo
+                if (venda.cargo === 'junior') {
+                    venda.cargo = 'Júnior'
+                } else if (venda.cargo === 'pleno') {
+                    venda.cargo = 'Pleno'
+                } else {
+                    venda.cargo = 'Sénior'
+                }
 
                 vendasTableBody.innerHTML += `
                         <tr>
@@ -337,8 +346,6 @@
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(venda)
-            }).then(() => {
-                buscarVendas()
             })
             
             modalAdd.style.display = 'none'
@@ -369,12 +376,10 @@
                     valorVenda: document.getElementById('valorVendaEditar').value
                 }
 
-                fetch(`http://localhost:5000/vendas/${index}`, {
+                fetch(`http://localhost:5000/vendas/${vendas[index].id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(venda)
-                }).then(() => {
-                    buscarVendas()
                 })
             })
         }
@@ -382,11 +387,9 @@
         //deletar venda
         function apagarContato(index) {
             const resultado = confirm('Tem certeza que deseja apgar o contato')
-            fetch(`http://localhost:5000/vendas/${index}`, {
+            fetch(`http://localhost:5000/vendas/${vendas[index].id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-            }).then(() => {
-                buscarVendas()
             })
         }
 
@@ -408,10 +411,13 @@
 
                             if (vendedor.cargo === 'Júnior') {
                                 vendedor.comissao = vendedor.totalVendas * 0.01
+                                vendedor.cargo = 'Júnior'
                             } else if (vendedor.cargo === 'Pleno') {
                                 vendedor.comissao = vendedor.totalVendas * 0.02
+                                vendedor.cargo = 'Pleno'
                             } else {
                                 vendedor.comissao = vendedor.totalVendas * 0.03
+                                vendedor.cargo = 'Sénior'
                             }
                         }
                     })
@@ -458,7 +464,6 @@
 
         //eventos
         formCriar.addEventListener('submit', adicionarVenda)
-
 
         window.addEventListener('DOMContentLoaded', buscarVendas)
     </script>
