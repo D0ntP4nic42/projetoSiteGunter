@@ -46,7 +46,7 @@
         }
 
         main {
-            width: 980px;
+            width: 1000px;
             margin: auto;
         }
 
@@ -56,8 +56,9 @@
 
         .table thead th {
             border-top: 0px;
+            align-items: baseline;
         }
-
+ 
         .modal {
             display: none;
             z-index: 3;
@@ -101,6 +102,22 @@
             width: 100%;
             bottom: 0;
         }
+
+        @keyframes loading {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #loader {
+            width: 40px;
+            height: 40px;
+            border: 10px solid;
+            border-radius: 50%;
+            border-color: var(--cor-secundaria);
+            border-top-color: transparent;
+            animation: loading 0.6s linear infinite;
+        }
     </style>
 </head>
 
@@ -120,17 +137,18 @@
         <table class="table table-hover" id="vendas">
             <thead class="prevent-select">
                 <tr>
-                    <th style="padding-bottom: 18px;">Código do vendedor</th>
-                    <th style="padding-bottom: 18px;">Nome do vendedor</th>
-                    <th style="padding-bottom: 18px;">Cargo do vendedor</th>
-                    <th style="padding-bottom: 18px;">Código da venda</th>
-                    <th style="padding-bottom: 18px;">Valor da venda</th>
+                    <th nowrap>Código do vendedor</th>
+                    <th nowrap>Nome do vendedor</th>
+                    <th nowrap>Cargo do vendedor</th>
+                    <th nowrap>Código da venda</th>
+                    <th nowrap>Valor da venda</th>
                     <th><button type="button" class="btn btn-primary text-center"
                             onclick="modalAdd.style.display = 'block', overlay.style.display = 'block'">+Adicionar</button>
                     </th>
                 </tr>
             </thead>
-            <tbody id="vendasTableBody"></tbody>
+            <tbody id="vendasTableBody">
+            </tbody>
         </table>
 
         <!-- botão do caminhao -->
@@ -149,9 +167,9 @@
                 <div class="box"></div>
             </div>
         </button>
-
-
-
+        
+        
+        
         <!-- modal Add -->
         <div id="modalAdicionarContato" class="modal">
             <div class="modal-dialog">
@@ -227,7 +245,7 @@
                                 <input type="number" class="form-control" id="valorVendaEditar" required>
                             </div>
                             <div class="text-center">
-                                <button type="button" id="btnSalvarEdicao" class="btn btn-primary" 
+                                <button type="submit" id="btnSalvarEdicao" class="btn btn-primary" 
                                         onclick="modalEditar.style.display = 'none',
                                         overlay.style.display = 'none'">
                                     Salvar venda
@@ -279,55 +297,68 @@
                 })
         }
 
+        function sleep(ms){
+            return new Promise (resolve => setTimeout(resolve, ms)) 
+        }
+
         //vendas
         function renderizarTabelaVendas() {
             let vendasTableBody = document.getElementById('vendasTableBody')
 
             vendasTableBody.innerHTML = ''
-            vendas.forEach((venda, index) => {
-                venda.valorVenda = parseFloat(venda.valorVenda) //formatar dinheiro
-                valorVendaFormatado = venda.valorVenda.toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
+
+            vendasTableBody.innerHTML += `
+                                <div id="loader"></div>
+                                `
+
+            sleep(2000).then(() => { //loading
+                vendasTableBody.innerHTML = ''
+
+                vendas.forEach((venda, index) => {
+                    venda.valorVenda = parseFloat(venda.valorVenda) //formatar dinheiro
+                    valorVendaFormatado = venda.valorVenda.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    })
+
+                    //formatar numeros
+                    venda.codVendedor = venda.codVendedor.toString()
+                    venda.codVendedor = venda.codVendedor.padStart(3, '0') 
+                    venda.codVenda = venda.codVenda.toString()
+                    venda.codVenda = venda.codVenda.padStart(3, '0')
+
+                    //formatarCargo
+                    venda.cargoVendedor = venda.cargoVendedor.replace(/[^a-zA-Z0-9 ]/g, '')
+                    venda.cargoVendedor = venda.cargoVendedor.toLowerCase()
+
+                    if (venda.cargoVendedor === 'junior') {
+                        venda.cargoVendedor = 'Júnior'
+                    } else if (venda.cargoVendedor === 'pleno') {
+                        venda.cargoVendedor = 'Pleno'
+                    } else {
+                        venda.cargoVendedor = 'Sênior'
+                    }
+
+                    vendasTableBody.innerHTML += `
+                            <tr>
+                                <td style="padding-top: 20px;">${venda.codVendedor}</td>
+                                <td style="padding-top: 20px;">${venda.nomeVendedor}</td>
+                                <td style="padding-top: 20px;">${venda.cargoVendedor}</td>
+                                <td style="padding-top: 20px;">${venda.codVenda}</td>
+                                <td style="padding-top: 20px;">${valorVendaFormatado}</td>
+                                <td style="display: flex;">
+                                    <button type="button" 
+                                            class="btn btn-primary text-center" style="display: inline;"
+                                            onclick="overlay.style.display = 'block', editarContato(${index})">
+                                        Editar
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarContato(${index})"">
+                                        Deletar
+                                    </button>
+                                </td>
+                            </tr>
+                            `
                 })
-
-                //formatar numeros
-                venda.codVendedor = venda.codVendedor.toString()
-                venda.codVendedor = venda.codVendedor.padStart(3, '0') 
-                venda.codVenda = venda.codVenda.toString()
-                venda.codVenda = venda.codVenda.padStart(3, '0')
-
-                //formatarCargo
-                venda.cargoVendedor = venda.cargoVendedor.replace(/[^a-zA-Z0-9 ]/g, '')
-                venda.cargoVendedor = venda.cargoVendedor.toLowerCase()
-
-                if (venda.cargoVendedor === 'junior') {
-                    venda.cargoVendedor = 'Júnior'
-                } else if (venda.cargoVendedor === 'pleno') {
-                    venda.cargoVendedor = 'Pleno'
-                } else {
-                    venda.cargoVendedor = 'Sênior'
-                }
-
-                vendasTableBody.innerHTML += `
-                        <tr>
-                            <td style="padding-top: 20px;">${venda.codVendedor}</td>
-                            <td style="padding-top: 20px;">${venda.nomeVendedor}</td>
-                            <td style="padding-top: 20px;">${venda.cargoVendedor}</td>
-                            <td style="padding-top: 20px;">${venda.codVenda}</td>
-                            <td style="padding-top: 20px;">${valorVendaFormatado}</td>
-                            <td style="display: flex;">
-                                <button type="button" 
-                                        class="btn btn-primary text-center" style="display: inline;"
-                                        onclick="overlay.style.display = 'block', editarContato(${index})">
-                                    Editar
-                                </button>
-                                <button type="button" class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarContato(${index})"">
-                                    Deletar
-                                </button>
-                            </td>
-                        </tr>
-                        `
             })
         }
 
@@ -371,7 +402,9 @@
             document.getElementById('codVendaEditar').value = venda.codVenda
             document.getElementById('valorVendaEditar').value = venda.valorVenda
 
-            btnSalvarEdicao.addEventListener('click', function() {
+            formAtualizar.addEventListener('submit', function(event) {
+                event.preventDefault()
+
                 venda = {
                     codVendedor: document.getElementById('codVendedorEditar').value,
                     nomeVendedor: document.getElementById('nomeEditar').value,
