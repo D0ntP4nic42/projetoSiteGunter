@@ -26,6 +26,7 @@
             background-color: var(--cor-fundo);
             color: var(--cor-primaria);
             margin-bottom: 3rem;
+            overflow-y: scroll;
         }
 
         header {
@@ -118,6 +119,11 @@
             border-top-color: transparent;
             animation: loading 0.6s linear infinite;
         }
+
+        #loaderCont {
+            padding-left: 0px;
+            margin-left: 480px;
+        }
     </style>
 </head>
 
@@ -150,6 +156,10 @@
             <tbody id="vendasTableBody">
             </tbody>
         </table>
+
+        <div class="container" id="loaderCont">
+            <div id="loader"></div>
+        </div>
 
         <!-- botão do caminhao -->
         <button id="btnCaminhao" class="truck-button mt-3 mb-3" onclick="infoRelatorio()">
@@ -287,6 +297,7 @@
         const btnSalvarEdicao = document.getElementById("btnSalvarEdicao")
         const btnCaminhao = document.getElementById("btnCaminhao")
         const overlay = document.getElementById("overlay")
+        const loader = document.getElementById("loaderCont")
 
         function buscarVendas() {
             fetch('http://localhost:5000/vendas')
@@ -307,11 +318,11 @@
 
             vendasTableBody.innerHTML = ''
 
-            vendasTableBody.innerHTML += `
-                                <div id="loader"></div>
-                                `
-
+            loader.style.display = 'block'
+            
             sleep(2000).then(() => { //loading
+                loader.style.display = 'none'
+
                 vendasTableBody.innerHTML = ''
 
                 vendas.forEach((venda, index) => {
