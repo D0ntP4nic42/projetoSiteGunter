@@ -291,15 +291,19 @@
                     currency: 'BRL'
                 })
 
+                //formatar numeros
                 venda.codVendedor = venda.codVendedor.toString()
-                venda.codVendedor = venda.codVendedor.padStart(3, '0') //formatar numeros
+                venda.codVendedor = venda.codVendedor.padStart(3, '0') 
                 venda.codVenda = venda.codVenda.toString()
                 venda.codVenda = venda.codVenda.padStart(3, '0')
 
                 //formatarCargo
-                if (venda.cargoVendedor === 'junior' || venda.cargoVendedor === 'Júnior' || venda.cargoVendedor === 'Junior') {
+                venda.cargoVendedor = venda.cargoVendedor.replace(/[^a-zA-Z0-9 ]/g, '')
+                venda.cargoVendedor = venda.cargoVendedor.toLowerCase()
+
+                if (venda.cargoVendedor === 'junior') {
                     venda.cargoVendedor = 'Júnior'
-                } else if (venda.cargoVendedor === 'pleno' || venda.cargoVendedor === 'Pleno') {
+                } else if (venda.cargoVendedor === 'pleno') {
                     venda.cargoVendedor = 'Pleno'
                 } else {
                     venda.cargoVendedor = 'Sênior'
@@ -409,6 +413,7 @@
                                 vendedor.maiorVenda = venda.valorVenda
                             }
 
+                            //formatar a comissão   
                             if (vendedor.cargoVendedor === 'Júnior') {
                                 vendedor.comissao = vendedor.totalVendas * 0.01
                                 vendedor.cargoVendedor = 'Júnior'
