@@ -80,6 +80,7 @@ function editarVenda(req, res) {
     })
 
     const idEditar = req.url.split('/')[2]
+
     let body = ''
     req.on('data', chunk => body += chunk.toString()) //parte por parte 'chunks' body é a junção deles
     req.on('end', () => {

@@ -210,7 +210,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="valorVenda">Valor venda:</label>
-                                <input type="number" class="form-control" id="valorVenda" required>
+                                <input type="number" step="any" class="form-control" id="valorVenda" required>
                             </div>
                             <div class="text-center"><button type="submit" class="btn btn-primary">Salvar venda</button>
                             </div>
@@ -252,7 +252,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="valorVendaEditar">Valor venda:</label>
-                                <input type="number" class="form-control" id="valorVendaEditar" required>
+                                <input type="number" step="any" class="form-control" id="valorVendaEditar" required>
                             </div>
                             <div class="text-center">
                                 <button type="submit" id="btnSalvarEdicao" class="btn btn-primary" 
@@ -360,10 +360,10 @@
                                 <td style="display: flex;">
                                     <button type="button" 
                                             class="btn btn-primary text-center" style="display: inline;"
-                                            onclick="overlay.style.display = 'block', editarContato(${index})">
+                                            onclick="editarContato(${index}), overlay.style.display = 'block'">
                                         Editar
                                     </button>
-                                    <button type="button" class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarContato(${index})"">
+                                    <button type="button" class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarContato(${index})">
                                         Deletar
                                     </button>
                                 </td>
@@ -380,7 +380,7 @@
             let nomeVendedor = document.getElementById("nome").value
             let cargoVendedor = document.getElementById("cargo").value
             let codVenda = document.getElementById("codVenda").value
-            let valorVenda = document.getElementById("valorVenda").value
+            let valorVenda = parseFloat(document.getElementById("valorVenda").value)
 
             let venda = {
                 codVendedor,
@@ -414,8 +414,6 @@
             document.getElementById('valorVendaEditar').value = venda.valorVenda
 
             formAtualizar.addEventListener('submit', function(event) {
-                event.preventDefault()
-
                 venda = {
                     codVendedor: document.getElementById('codVendedorEditar').value,
                     nomeVendedor: document.getElementById('nomeEditar').value,
