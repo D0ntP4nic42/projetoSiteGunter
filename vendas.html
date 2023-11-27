@@ -190,7 +190,7 @@
         
         
         <!-- modal Add -->
-        <div id="modalAdicionarContato" class="modal">
+        <div id="modalAdicionarVenda" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -200,7 +200,7 @@
                     </div>
                     <div class="modal-body">
                         <p>Formulário para adicionar venda.</p>
-                        <form id="formAdicionarContato" class="text-left">
+                        <form id="formAdicionarVenda" class="text-left">
                             <div class="formCriar-group">
                                 <label for="codVendedor">Código do vendedor:</label>
                                 <input type="number" class="form-control" id="codVendedor" required>
@@ -211,7 +211,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="cargo">Cargo:</label>
-                                <input type="text" class="form-control" id="cargo" required>
+                                <select name="cargo" id="cargo">
+                                    <option value="junior">Júnior</option>
+                                    <option value="pleno">Pleno</option>
+                                    <option value="senior">Sênior</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="codVenda">Código da venda:</label>
@@ -242,7 +246,7 @@
                     </div>
                     <div class="modal-body">
                         <p>Formulário para editar venda.</p>
-                        <form id="formEditarContato" class="text-left">
+                        <form id="formEditarVenda" class="text-left">
                             <div class="form-group">
                                 <label for="codVendedorEditar">Código do vendedor:</label>
                                 <input type="number" class="form-control" id="codVendedorEditar" required>
@@ -253,7 +257,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="cargoEditar">Cargo:</label>
-                                <input type="text" class="form-control" id="cargoEditar" required>
+                                <select name="cargoEditar" id="cargoEditar">
+                                    <option id="juniorEditar" value="Júnior">Júnior</option>
+                                    <option id="plenoEditar" value="Pleno">Pleno</option>
+                                    <option id="seniorEditar" value="Sênior">Sênior</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="codVendaEditar">Código da venda:</label>
@@ -299,10 +307,10 @@
         let vendas = []
 
         //documents
-        const modalAdd = document.getElementById("modalAdicionarContato")
+        const modalAdd = document.getElementById("modalAdicionarVenda")
         const modalEditar = document.getElementById('modalEditar')
-        const formCriar = document.getElementById("formAdicionarContato")
-        const formAtualizar = document.getElementById("formEditarContato")
+        const formCriar = document.getElementById("formAdicionarVenda")
+        const formAtualizar = document.getElementById("formEditarVenda")
         const btnSalvarEdicao = document.getElementById("btnSalvarEdicao")
         const btnCaminhao = document.getElementById("btnCaminhao")
         const overlay = document.getElementById("overlay")
@@ -369,10 +377,10 @@
                                 <td style="display: flex;">
                                     <button type="button" 
                                             class="btn btn-primary text-center" style="display: inline;"
-                                            onclick="editarContato(${index}), overlay.style.display = 'block'">
+                                            onclick="editarVenda(${index}), overlay.style.display = 'block'">
                                         Editar
                                     </button>
-                                    <button type="button" class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarContato(${index})">
+                                    <button type="button" class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarVenda(${index})">
                                         Deletar
                                     </button>
                                 </td>
@@ -411,16 +419,25 @@
         }
 
         //editar venda
-        function editarContato(index) {
+        function editarVenda(index) {
             modalEditar.style.display = 'block'
+            let select = document.getElementById("cargoEditar")
 
             let venda = vendas[index]
 
             document.getElementById('codVendedorEditar').value = venda.codVendedor
             document.getElementById('nomeEditar').value = venda.nomeVendedor
-            document.getElementById('cargoEditar').value = venda.cargoVendedor
             document.getElementById('codVendaEditar').value = venda.codVenda
             document.getElementById('valorVendaEditar').value = venda.valorVenda
+
+            //cargos
+            for(let i = 0; i < select.options.length; i++){
+                option = select.options[i]
+                console.log(option.value, venda.cargoVendedor)
+                if(option.value === venda.cargoVendedor){
+                    option.setAttribute('selected', true)
+                }
+            }
 
             formAtualizar.addEventListener('submit', function(event) {
                 venda = {
@@ -440,7 +457,7 @@
         }
 
         //deletar venda
-        function apagarContato(index) {
+        function apagarVenda(index) {
             const resultado = confirm('Tem certeza que deseja apgar a venda')
             fetch(`http://localhost:5000/vendas/${vendas[index].id}`, {
                 method: 'DELETE',
