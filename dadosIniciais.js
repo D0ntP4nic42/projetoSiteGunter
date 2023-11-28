@@ -60,7 +60,7 @@ let dadosIniciais = [
     },
     {
         codVendedor: '7',
-        nomeVendedor: 'Carlos Eduardo Cardoso Tomasini',
+        nomeVendedor: 'Bond, James Bond',
         cargoVendedor: 'pleno',
         codVenda: '9',
         valorVenda: '34256.99',
@@ -164,7 +164,7 @@ let dadosIniciais = [
     },
     {
         codVendedor: '7',
-        nomeVendedor: 'Carlos Eduardo Cardoso Tomasini',
+        nomeVendedor: 'Bond, James Bond',
         cargoVendedor: 'pleno',
         codVenda: '22',
         valorVenda: '67158.24',
@@ -199,7 +199,7 @@ let dadosIniciais = [
         nomeVendedor: 'Leonardo Brito Gomes',
         cargoVendedor: 'senior',
         codVenda: '042',
-        valorVenda: '4242',
+        valorVenda: '424242.42',
         id: 27
     }
 ]
