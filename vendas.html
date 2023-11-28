@@ -491,37 +491,37 @@
                     vendedores.forEach(vendedor => {
                         if (vendedor.nome === venda.nomeVendedor) {
                             vendedor.totalVendas += venda.valorVenda
-
+                            
                             if (venda.valorVenda > vendedor.maiorVenda) {
                                 vendedor.maiorVenda = venda.valorVenda
                             }
-
+                            
                             //formatar a comissão   
                             if (vendedor.cargoVendedor === 'Júnior') {
                                 vendedor.comissao = vendedor.totalVendas * 0.01
-                                vendedor.cargoVendedor = 'Júnior'
                             } else if (vendedor.cargoVendedor === 'Pleno') {
                                 vendedor.comissao = vendedor.totalVendas * 0.02
-                                vendedor.cargoVendedor = 'Pleno'
                             } else {
                                 vendedor.comissao = vendedor.totalVendas * 0.03
-                                vendedor.cargoVendedor = 'Sênior'
                             }
                         }
                     })
-
+                    
                 } else { //caso n tenha sido adicionado ainda
                     let nome = venda.nomeVendedor
                     let cargoVendedor = venda.cargoVendedor
                     let totalVendas = parseFloat(venda.valorVenda)
                     let maiorVenda = parseFloat(venda.valorVenda)
-
-                    if (cargoVendedor === 'Júnior') {
+                    
+                    if (cargoVendedor === 'junior') {
                         comissao = totalVendas * 0.01
-                    } else if (cargoVendedor === 'Pleno') {
+                        cargoVendedor = 'Júnior'
+                    } else if (cargoVendedor === 'pleno') {
                         comissao = totalVendas * 0.02
+                        cargoVendedor = 'Pleno'
                     } else {
                         comissao = totalVendas * 0.03
+                        cargoVendedor = 'Sênior'
                     }
 
                     vendedor = {
@@ -531,12 +531,16 @@
                         maiorVenda,
                         comissao
                     }
-
+                    
                     vendedores.push(vendedor)
                     codAdd.push(venda.codVendedor)
                 }
-            })
 
+            })
+            
+            vendedores.forEach(vendedor => {
+                console.log(vendedor.cargoVendedor)
+            })
             btnCaminhao.addEventListener('click', function () { //página do relatório
                 if (!btnCaminhao.classList.contains('animation')) {
                     window.open("relatório.html", '_blank')

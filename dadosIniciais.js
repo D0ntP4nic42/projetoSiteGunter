@@ -218,23 +218,27 @@ bd.all(`SELECT * FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlit
     })
 
     if(!tabelas.includes('vendas')){
-        bd.all(`CREATE TABLE "vendas"(id integer primary key, codVendedor text, "nomeVendedor" text, "cargoVendedor" text, codVenda text, valorVenda text)`)
-        console.log("Tabela Criada")
-        
-        dadosIniciais.forEach(venda => {
-            bd.all(`INSERT INTO "vendas" ("codVendedor", "nomeVendedor", "cargoVendedor", "codVenda")
-                    VALUES (?, ?, ?, ?)`,
-                    [venda.codVendedor, venda.nomeVendedor, venda.cargoVendedor, venda.codVenda],
-                    function(err) {
-                        if(err){
-                            throw err
-                        } else {
-                            console.log("Venda adicionada")
-                        }
+        bd.all(`CREATE TABLE "vendas"(id integer primary key, codVendedor text, "nomeVendedor" text, "cargoVendedor" text, codVenda text, valorVenda text)`, function (err) {
+            if(err){
+                throw err
+            } else {
+                console.log("Tabela Criada")
+                dadosIniciais.forEach(venda => {
+                    bd.all(`INSERT INTO "vendas" ("codVendedor", "nomeVendedor", "cargoVendedor", "codVenda", "valorVenda")
+                            VALUES (?, ?, ?, ?, ?)`,
+                            [venda.codVendedor, venda.nomeVendedor, venda.cargoVendedor, venda.codVenda, venda.valorVenda],
+                            function(err2) {
+                                if(err2){
+                                    throw err2
+                                } else {
+                                    console.log("Venda adicionada")
+                                }
                     })
+                })
+            }
         })
+        
 
-        console.log("Dados iniciais inseridos")
     }
     
     bd.close((err) => { //fechar conexão
