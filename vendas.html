@@ -167,8 +167,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="vendasTableBody">
-            </tbody>
+            <tbody id="vendasTableBody"></tbody>
         </table>
 
         <div class="container" id="loaderCont">
@@ -230,7 +229,8 @@
                                 <label for="valorVenda">Valor venda:</label>
                                 <input type="number" step="any" class="form-control" id="valorVenda" required>
                             </div>
-                            <div class="text-center"><button type="submit" class="btn btn-primary">Salvar venda</button>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary" id="btnSalvarVenda" onclick="console.log('teste')">Salvar venda</button>
                             </div>
                         </form>
                     </div>
@@ -316,6 +316,7 @@
         const modalEditar = document.getElementById('modalEditar')
         const formCriar = document.getElementById("formAdicionarVenda")
         const formAtualizar = document.getElementById("formEditarVenda")
+        const btnSalvarVenda = document.getElementById("btnSalvarVenda")
         const btnSalvarEdicao = document.getElementById("btnSalvarEdicao")
         const btnCaminhao = document.getElementById("btnCaminhao")
         const overlay = document.getElementById("overlay")
@@ -398,8 +399,6 @@
         function adicionarVenda(event) {
             event.preventDefault();
 
-            console.log("teste")
-
             let codVendedor = document.getElementById("codVendedor").value
             let nomeVendedor = document.getElementById("nome").value
             let cargoVendedor = document.getElementById("cargo").value
@@ -413,8 +412,6 @@
                 codVenda,
                 valorVenda
             }
-
-            console.log(venda.cargoVendedor)
 
             fetch('http://localhost:5000/vendas',{
                 method: 'POST',
@@ -483,6 +480,7 @@
         //relatorio
         function infoRelatorio() {
             let vendedores = []
+            console.log(vendas)
 
             let codAdd = []
 
@@ -537,10 +535,7 @@
                 }
 
             })
-            
-            vendedores.forEach(vendedor => {
-                console.log(vendedor.cargoVendedor)
-            })
+
             btnCaminhao.addEventListener('click', function () { //página do relatório
                 if (!btnCaminhao.classList.contains('animation')) {
                     window.open("relatório.html", '_blank')
