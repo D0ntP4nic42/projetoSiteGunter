@@ -263,9 +263,9 @@
                             <div class="form-group">
                                 <label for="cargoEditar">Cargo:</label>
                                 <select name="cargoEditar" id="cargoEditar">
-                                    <option id="juniorEditar" value="Júnior">Júnior</option>
-                                    <option id="plenoEditar" value="Pleno">Pleno</option>
-                                    <option id="seniorEditar" value="Sênior">Sênior</option>
+                                    <option id="juniorEditar" value="junior">Júnior</option>
+                                    <option id="plenoEditar" value="pleno">Pleno</option>
+                                    <option id="seniorEditar" value="senior">Sênior</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -365,18 +365,18 @@
                     venda.cargoVendedor = venda.cargoVendedor.toLowerCase()
 
                     if (venda.cargoVendedor === 'junior') {
-                        venda.cargoVendedor = 'Júnior'
+                        cargoVendedorFormatado = 'Júnior'
                     } else if (venda.cargoVendedor === 'pleno') {
-                        venda.cargoVendedor = 'Pleno'
+                        cargoVendedorFormatado = 'Pleno'
                     } else {
-                        venda.cargoVendedor = 'Sênior'
+                        cargoVendedorFormatado = 'Sênior'
                     }
 
                     vendasTableBody.innerHTML += `
                             <tr>
                                 <td style="padding-top: 20px;">${venda.codVendedor}</td>
                                 <td style="padding-top: 20px;">${venda.nomeVendedor}</td>
-                                <td style="padding-top: 20px;">${venda.cargoVendedor}</td>
+                                <td style="padding-top: 20px;">${cargoVendedorFormatado}</td>
                                 <td style="padding-top: 20px;">${venda.codVenda}</td>
                                 <td style="padding-top: 20px;">${valorVendaFormatado}</td>
                                 <td style="display: flex;">
@@ -398,6 +398,8 @@
         function adicionarVenda(event) {
             event.preventDefault();
 
+            console.log("teste")
+
             let codVendedor = document.getElementById("codVendedor").value
             let nomeVendedor = document.getElementById("nome").value
             let cargoVendedor = document.getElementById("cargo").value
@@ -411,6 +413,8 @@
                 codVenda,
                 valorVenda
             }
+
+            console.log(venda.cargoVendedor)
 
             fetch('http://localhost:5000/vendas',{
                 method: 'POST',
@@ -428,6 +432,8 @@
             modalEditar.style.display = 'block'
             let select = document.getElementById("cargoEditar")
 
+            let optionIndex
+
             let venda = vendas[index]
 
             document.getElementById('codVendedorEditar').value = venda.codVendedor
@@ -438,13 +444,17 @@
             //cargos
             for(let i = 0; i < select.options.length; i++){
                 option = select.options[i]
-                console.log(option.value, venda.cargoVendedor)
                 if(option.value === venda.cargoVendedor){
                     option.setAttribute('selected', true)
+                    optionIndex = i
+                } else {
+                    option.removeAttribute('selected')
                 }
             }
 
             formAtualizar.addEventListener('submit', function(event) {
+                event.preventDefault()
+
                 venda = {
                     codVendedor: document.getElementById('codVendedorEditar').value,
                     nomeVendedor: document.getElementById('nomeEditar').value,
