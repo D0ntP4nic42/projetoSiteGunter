@@ -17,6 +17,9 @@
     <!-- favicon -->
     <link rel="icon" href="/img/dinheiro.png">
 
+    <!-- form -->
+    <link rel="stylesheet" href="form\form.css">
+
     <style>
         :root {
             --cor-primaria: #4E9F3D;
@@ -26,7 +29,8 @@
         }
 
         body {
-            background-color: var(--cor-fundo);
+            /* background-color: var(--cor-fundo); */
+            background-image: url(/img/scattered-forcefields.svg);
             color: var(--cor-primaria);
             margin-bottom: 3rem;
             overflow-y: scroll;
@@ -34,10 +38,8 @@
 
         header {
             display: flex;
-            align-items: baseline;
-            justify-content: space-around;
-            background-color: var(--cor-terciaria);
             color: var(--cor-secundaria);
+            justify-content: center;
         }
 
         h1 {
@@ -64,28 +66,47 @@
             color: var(--cor-primaria);
         }
 
-        .table thead th {
-            border-top: 0px;
+        .table thead {
             align-items: baseline;
+            background-color: whitesmoke;
             position: -webkit-sticky;
             position: sticky;
             top: 0;
             z-index: 1;
-            background: #fff; 
+        }
+        
+        .table thead th {
+            border-top: 0px;
         }
  
         .modal {
             display: none;
             z-index: 3;
+            font-size: 15px;
         }
 
         #relatorioVendas {
             display: none;
         }
 
+        #formAdicionarVenda {
+            font-family: 'Poppins', sans-serif;
+        }
+
         .btn {
             background-color: var(--cor-secundaria);
             border-color: var(--cor-secundaria);
+        }
+
+        /* Nav inicio */
+
+        nav {
+            width: 1000px;
+            margin: auto;
+            margin-top: 10px;
+            position: sticky;
+            top: 0;
+            z-index: -1;
         }
 
         .nav-link {
@@ -96,6 +117,67 @@
         .nav-link:hover {
             color: var(--cor-primaria);
         }
+
+        ul {
+            margin: 20px;
+            padding: 0;
+            display: flex;
+        }
+
+        ul li {
+            list-style: none;
+            margin: 0 20px;
+            transition: 0.5s;
+        }
+
+        ul li a {
+            display: block;
+            position: relative;
+            text-decoration: none;
+            padding: 5px;
+            font-size: 18px;
+            font-family: sans-serif;
+            color: #fff;
+            text-transform: uppercase;
+            transition: 0.5s;
+        }
+
+        ul:hover li a {
+            transform: scale(0.8);
+            opacity: 0.2;
+            filter: blur(5px);
+        }
+
+        ul li a:hover {
+            transform: scale(1.5);
+            opacity: 1;
+            filter: blur(0);
+            text-decoration: none;
+            color: #fff;
+        }
+
+        ul li a:before {
+            border-radius: 10px;
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            transition: 0.5s;
+            transform-origin: right;
+            transform: scaleX(0);
+            z-index: -1;
+        }
+
+        ul li a:hover:before {
+            transition: transform 0.5s;
+            transform-origin: left;
+            transform: scaleX(1);
+        }
+
+        /* Nav fim */
 
         .prevent-select {
             -webkit-user-select: none;
@@ -116,7 +198,10 @@
             position: fixed;
             width: 100%;
             bottom: 0;
+            display: flex;
         }
+
+        /* loading inicio */
 
         @keyframes loading {
             to {
@@ -135,23 +220,28 @@
         }
 
         #loaderCont {
+            width: 520px;
             padding-left: 0px;
             margin-left: 480px;
         }
+
+        /* loading fim */
     </style>
 </head>
 
 <body>
-    <header class="text-center pt-3 pb-3 prevent-select">
+    <header class="text-center prevent-select mt-4">
         <h1><strong>Consórsios</strong>.LTDA</h1>
-
-
-        <nav class="nav justify-content-center">
-            <a class="nav-link" href="#" target="_blank">Sobre nós</a>
-            <a class="nav-link" href="#" target="_blank">Ajuda</a>
-            <a class="nav-link" href="#" target="_blank">Parceiros</a>
-        </nav>
     </header>
+    
+    <nav class="nav justify-content-center">
+        <ul>
+            <li><a class="nav-link" href="#">Sobre nós</a></li>
+            <li><a class="nav-link" href="#" target="_blank">Parceiros</a></li>
+            <li><a class="nav-link" href="vendas.html#vendas">Nossas vendas</a></li>
+            <li><a class="nav-link" href="#">Ajuda</a></li>
+        </ul>
+    </nav>
 
     <main class="text-center">
         <table class="table table-hover" id="vendas">
@@ -162,8 +252,10 @@
                     <th nowrap>Cargo do vendedor</th>
                     <th nowrap>Código da venda</th>
                     <th nowrap>Valor da venda</th>
-                    <th><button type="button" class="btn btn-primary text-center"
-                            onclick="modalAdd.style.display = 'block', overlay.style.display = 'block'">+Adicionar</button>
+                    <th style="padding-bottom: 6px;">
+                        <button type="button" class="btn btn-primary text-center"
+                            onclick="modalAdd.style.display = 'block', overlay.style.display = 'block'">+Adicionar
+                        </button>
                     </th>
                 </tr>
             </thead>
@@ -191,43 +283,38 @@
             </div>
         </button>
         
-        
-        
         <!-- modal Add -->
         <div id="modalAdicionarVenda" class="modal">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <div class="modal-content" style="background-color: rgb(19, 18, 18);">
                     <div class="modal-header">
                         <h5 class="modal-title">Adicionar nova venda</h5>
                         <button type="button" class="close" id="closeModal"
                             onclick="modalAdd.style.display = 'none', document.getElementById('overlay').style.display = 'none'">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <p>Formulário para adicionar venda.</p>
                         <form id="formAdicionarVenda" class="text-left">
-                            <div class="formCriar-group">
-                                <label for="codVendedor">Código do vendedor:</label>
-                                <input type="number" class="form-control" id="codVendedor" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="nome">Nome:</label>
-                                <input type="text" class="form-control" id="nome" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="cargo">Cargo:</label>
-                                <select name="cargo" id="cargo">
-                                    <option value="junior">Júnior</option>
-                                    <option value="pleno">Pleno</option>
-                                    <option value="senior">Sênior</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="codVenda">Código da venda:</label>
-                                <input type="number" class="form-control" id="codVenda" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="valorVenda">Valor venda:</label>
-                                <input type="number" step="any" class="form-control" id="valorVenda" required>
+                            <div class="containerForm">
+                                <div class="box">
+                                    <input type="number" autocomplete="off" id="codVendedor" required>
+                                    <span>Código do vendedor</span>
+                                </div>
+                                <div class="box">
+                                    <input type="text" id="nome" autocomplete="off" required>
+                                    <span>Nome</span>
+                                </div>
+                                <div class="box">
+                                    <input type="text" id="cargo" autocomplete="off" required>
+                                    <span>Cargo</span>
+                                </div>
+                                <div class="box">
+                                    <input type="number" id="codVenda" autocomplete="off" required>
+                                    <span>Código da venda</span>
+                                </div>
+                                <div class="box">
+                                    <input type="number" id="valorVenda" step="any" autocomplete="off" required>
+                                    <span>Valor da venda</span>
+                                </div>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary" id="btnSalvarVenda" onclick="console.log('teste')">Salvar venda</button>
@@ -292,8 +379,8 @@
 
     </main>
 
-    <footer class="pt-3 pb-3">
-
+    <footer class="pt-4">
+        
     </footer>
 
     <!-- overlay -->
@@ -322,6 +409,8 @@
         const overlay = document.getElementById("overlay")
         const loader = document.getElementById("loaderCont")
 
+
+        //buscar vendas
         function buscarVendas() {
             fetch('http://localhost:5000/vendas')
                 .then(response => response.json())
@@ -331,6 +420,7 @@
                 })
         }
 
+        //sleep
         function sleep(ms){
             return new Promise (resolve => setTimeout(resolve, ms)) 
         }
@@ -343,7 +433,7 @@
 
             loader.style.display = 'block'
             
-            sleep(2000).then(() => { //loading
+            sleep(1500).then(() => { //loading
                 loader.style.display = 'none'
 
                 vendasTableBody.innerHTML = ''
@@ -394,10 +484,12 @@
                             `
                 })
             })
+
+            return false
         }
 
         function adicionarVenda(event) {
-            event.preventDefault();
+            event.preventDefault()
 
             let codVendedor = document.getElementById("codVendedor").value
             let nomeVendedor = document.getElementById("nome").value
@@ -417,7 +509,7 @@
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(venda)
-            })
+            }).then(buscarVendas())
             
             modalAdd.style.display = 'none'
             overlay.style.display = 'none'
@@ -464,17 +556,20 @@
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(venda)
-                })
+                }).then(buscarVendas())
             })
         }
 
         //deletar venda
         function apagarVenda(index) {
             const resultado = confirm('Tem certeza que deseja apgar a venda')
-            fetch(`http://localhost:5000/vendas/${vendas[index].id}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-            })
+            if(resultado) {
+                fetch(`http://localhost:5000/vendas/${vendas[index].id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                }).then(buscarVendas())
+            }
+
         }
 
         //relatorio
@@ -559,5 +654,4 @@
     <script src='https://cdn.jsdelivr.net/npm/gsap@3.0.1/dist/gsap.min.js'></script>
     <script src="caminhao/caminhao.js"></script>
 </body>
-
 </html>

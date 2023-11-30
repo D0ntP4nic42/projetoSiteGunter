@@ -9,7 +9,7 @@ function obterVendas(req, res) {
         if (err) {
             console.log("Erro: ", err)
         } else {
-            console.log("Banco de dados estabelecido")
+            console.log("(Obter vendas) Banco de dados estabelecido")
         }
     })
 
@@ -27,7 +27,7 @@ function obterVendas(req, res) {
         if (err) {
             console.log("Erro: ", err)
         } else {
-            console.log("Conexão fechada")
+            console.log("(Obter vendas) Conexão fechada")
         }
     })
 }
@@ -37,7 +37,7 @@ function adicionarVenda(req, res) {
         if(err) {
             console.log("Erro: ", err)
         } else {
-            console.log("Banco de dados estabelecido")
+            console.log("(Adicionar venda) Banco de dados estabelecido")
         }
     })
 
@@ -62,7 +62,7 @@ function adicionarVenda(req, res) {
                 if (err) {
                     console.log("Erro: ", err)
                 } else {
-                    console.log("Conexão fechada")
+                    console.log("(Adicionar venda) Conexão fechada")
                 }
             })
         })
@@ -75,7 +75,7 @@ function editarVenda(req, res) {
         if (err) {
             console.log("Erro: ", err)
         } else {
-            console.log("Banco de dados estabelecido")
+            console.log("(Editar venda) Banco de dados estabelecido")
         }
     })
 
@@ -102,7 +102,7 @@ function editarVenda(req, res) {
                 if (err) {
                     console.log("Erro: ", err)
                 } else {
-                    console.log("Conexão fechada")
+                    console.log("(Editar venda) Conexão fechada")
                 }
             })
         })
@@ -114,7 +114,7 @@ function apagarVenda(req, res) {
         if (err) {
             console.log("Erro: ", err)
         } else {
-            console.log("Banco de dados estabelecido")
+            console.log("(Apagar venda) Banco de dados estabelecido")
         }
     })
 
@@ -133,7 +133,7 @@ function apagarVenda(req, res) {
         if (err) {
             console.log("Erro: ", err)
         } else {
-            console.log("Conexão fechada")
+            console.log("(Apagar venda) Conexão fechada")
         }
     })
 }

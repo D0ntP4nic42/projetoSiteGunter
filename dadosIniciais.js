@@ -239,6 +239,8 @@ bd.all(`SELECT * FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlit
         })
         
 
+    } else {
+        console.log("Dados já adicionados")
     }
     
     bd.close((err) => { //fechar conexão
