@@ -15,12 +15,12 @@
     gap: 30px;
 }
 
-.box {
+.boxForm {
     position: relative;
     width: 250px;
 }
 
-.box input {
+.boxForm input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ffffff40;
@@ -31,7 +31,7 @@
     font-size: 1em;
 }
 
-.box span {
+.boxForm span {
     position: absolute;
     left: 0;
     padding: 10px;
@@ -44,8 +44,8 @@
     transition: 0.5s;
 }
 
-.box input:valid~span,
-.box input:focus~span {
+.boxForm input:valid~span,
+.boxForm input:focus~span {
     color: green;
     transform: translateX(10px) translateY(-7px);
     font-size: 0.65em;
@@ -55,35 +55,35 @@
     border-right: 1px solid green;
 }
 
-.box:nth-child(2) input:valid~span,
-.box:nth-child(2) input:focus~span {
+.boxForm:nth-child(2) input:valid~span,
+.boxForm:nth-child(2) input:focus~span {
     color: #25252b;
     background-color: green;
     border-radius: 5px;
 }
 
-.box:nth-child(3) input:valid~span,
-.box:nth-child(3) input:focus~span {
+.boxForm:nth-child(3) input:valid~span,
+.boxForm:nth-child(3) input:focus~span {
     border: 1px solid green;
     border-radius: 5px;
 }
 
-.box:nth-child(4) input:valid~span,
-.box:nth-child(4) input:focus~span {
+.boxForm:nth-child(4) input:valid~span,
+.boxForm:nth-child(4) input:focus~span {
     border-top: 1px solid green;
     border-bottom: 1px solid green;
     border-left: none;
     border-right: none;
 }
 
-.box:nth-child(5) input:valid~span,
-.box:nth-child(5) input:focus~span {
+.boxForm:nth-child(5) input:valid~span,
+.boxForm:nth-child(5) input:focus~span {
     border: 1px solid green;
     width: 80%;
     text-align: center;
 }
 
-.box input:valid,
-.box input:focus {
+.boxForm input:valid,
+.boxForm input:focus {
     border: 1px solid green;
 }

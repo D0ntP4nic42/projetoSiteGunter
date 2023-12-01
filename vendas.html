@@ -85,6 +85,29 @@
             font-size: 15px;
         }
 
+        .modal-content {
+            width: 400px;
+            height: 500px;
+        }
+
+        #cargo {
+            background-color: #25252b;
+            height: 44.5px;
+        }
+
+        .cargoForm {
+            height: 44.5px;
+        }
+
+        .custom-select {
+            border: 1px solid #ffffff40;
+            color: white;
+        }
+
+        option {
+            color: white;
+        }
+
         #relatorioVendas {
             display: none;
         }
@@ -106,7 +129,7 @@
             margin-top: 10px;
             position: sticky;
             top: 0;
-            z-index: -1;
+            z-index: 0;
         }
 
         .nav-link {
@@ -295,23 +318,28 @@
                     <div class="modal-body">
                         <form id="formAdicionarVenda" class="text-left">
                             <div class="containerForm">
-                                <div class="box">
+                                <div class="boxForm mt-2">
                                     <input type="number" autocomplete="off" id="codVendedor" required>
                                     <span>Código do vendedor</span>
                                 </div>
-                                <div class="box">
+                                <div class="boxForm">
                                     <input type="text" id="nome" autocomplete="off" required>
                                     <span>Nome</span>
                                 </div>
-                                <div class="box">
-                                    <input type="text" id="cargo" autocomplete="off" required>
-                                    <span>Cargo</span>
+                                <div class="boxForm cargoForm">
+                                    <div class="form-group">
+                                        <select class="custom-select" name="cargo" id="cargo">
+                                            <option value="junior" selected>Júnior</option>
+                                            <option value="pleno">Pleno</option>
+                                            <option value="senior">Sênior</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="box">
+                                <div class="boxForm">
                                     <input type="number" id="codVenda" autocomplete="off" required>
                                     <span>Código da venda</span>
                                 </div>
-                                <div class="box">
+                                <div class="boxForm">
                                     <input type="number" id="valorVenda" step="any" autocomplete="off" required>
                                     <span>Valor da venda</span>
                                 </div>
@@ -471,12 +499,12 @@
                                 <td style="padding-top: 20px;">${venda.codVenda}</td>
                                 <td style="padding-top: 20px;">${valorVendaFormatado}</td>
                                 <td style="display: flex;">
-                                    <button type="button" 
+                                    <button
                                             class="btn btn-primary text-center" style="display: inline;"
                                             onclick="editarVenda(${index}), overlay.style.display = 'block'">
                                         Editar
                                     </button>
-                                    <button type="button" class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarVenda(${index})">
+                                    <button class="btn btn-secondary btnApagar text-center ml-2" onclick="apagarVenda(${index})">
                                         Deletar
                                     </button>
                                 </td>
