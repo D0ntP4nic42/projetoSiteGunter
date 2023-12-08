@@ -1,7 +1,8 @@
 /* árvore */
 .christmas-tree {
     position: relative;
-    top: 100px;
+    top: 50%;
+    left: 20%;
     cursor: pointer;
 }
 

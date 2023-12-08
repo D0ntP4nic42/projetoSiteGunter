@@ -29,6 +29,9 @@
     <!-- lightbulbs -->
     <link rel="stylesheet" href="assets/light.css">
 
+    <!-- btn Christmas -->
+    <link rel="stylesheet" href="assets/buttonChristmas.css">
+
     <style>
         :root {
             --cor-primaria: #4E9F3D;
@@ -47,11 +50,6 @@
             display: flex;
             color: var(--cor-secundaria);
             justify-content: center;
-            background-image: url(img/dinheiro.png);
-            background-repeat: no-repeat;
-            background-size: 3%;
-            background-position-y: 27%;
-            background-position-x: 37%;
         }
 
         h1 {
@@ -83,6 +81,11 @@
 
         strong {
             font-size: 40px;
+            background-image: url(img/dinheiro.png);
+            background-repeat: no-repeat;
+            background-size: 22%;
+            background-position-y: 50%;
+            padding-left: 75px;
         }
 
         main {
@@ -131,6 +134,10 @@
             display: none;
             z-index: 4;
             font-size: 15px;
+        }
+
+        .modal-dialog {
+            width: 400px;
         }
 
         .modal-content {
@@ -362,6 +369,7 @@
         </div>
     </div>
     
+    <!-- luz -->
     <section class="light-bulbs" style="width: 1000px;">
         <div class="light-bulb theme-color-one"></div>
         <div class="light-bulb theme-color-two"></div>
@@ -513,6 +521,8 @@
                 </div>
             </div>
         </div>
+
+        
 
         <!-- modal Editar -->
         <div class="modal" id="modalEditar">

@@ -7,12 +7,6 @@
     --white: #fff;
     --black: #000;
     --grey: #999;
-    background: var(--black);
-    color: var(--white);
-}
-
-body {
-    font-family: 'Alatsi', sans-serif;
 }
 
 .light-bulbs {
@@ -63,14 +57,14 @@ body {
     background: #222;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    left: 25%;
-    top: -12px;
+    left: 34%;
+    top: -9px;
 }
 
 .light-bulb::after {
     content: '';
-    top: -20px;
-    left: 60%;
+    top: -18px;
+    left: 50%;
     position: absolute;
     width: 90px;
     height: 28px;
