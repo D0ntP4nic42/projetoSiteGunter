@@ -684,6 +684,22 @@
             })
         }
 
+        function validar(venda) {
+            fetch('http://localhost:5000/vendas')
+                .then(response => response.json())
+                .then(dados => {
+                    vendas = dados
+                })
+
+            vendas.forEach((vendaOriginal) => {
+                  if (vendaOriginal.nomeVendedor === venda.nomeVendedor && vendaOriginal.codVendedor === venda.codVendedor) {
+                      return true
+                  }
+            })
+
+            return false
+        }
+
         function adicionarVenda(event) {
             event.preventDefault()
 
@@ -693,9 +709,6 @@
             let codVenda = document.getElementById("codVenda").value
             let valorVenda = parseFloat(document.getElementById("valorVenda").value)
 
-            let isValid = validar();
-            
-            if(isValid) {
             let venda = {
                 codVendedor,
                 nomeVendedor,
@@ -703,18 +716,22 @@
                 codVenda,
                 valorVenda
             }
-
-            fetch('http://localhost:5000/vendas', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(venda)
-            }).then(() => buscarVendas())
-
-            modalAdd.style.display = 'none'
-            overlay.style.display = 'none'
-            formCriar.reset()
+            
+            let isValid = validar(venda);
+            
+            if(isValid) {
+                fetch('http://localhost:5000/vendas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(venda)
+                }).then(() => buscarVendas())
+    
+                modalAdd.style.display = 'none'
+                overlay.style.display = 'none'
+                formCriar.reset()
             } else {
-                adicionarVenda(event)
+                let nomeVendedorField = document.getElementById("nome")
+                nomeVendedorField.//nome n corresponde ao cod do vendedor
             }
 
         }
