@@ -693,6 +693,9 @@
             let codVenda = document.getElementById("codVenda").value
             let valorVenda = parseFloat(document.getElementById("valorVenda").value)
 
+            let isValid = validar();
+            
+            if(isValid) {
             let venda = {
                 codVendedor,
                 nomeVendedor,
@@ -710,6 +713,10 @@
             modalAdd.style.display = 'none'
             overlay.style.display = 'none'
             formCriar.reset()
+            } else {
+                adicionarVenda(event)
+            }
+
         }
 
         //editar venda
