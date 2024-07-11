@@ -138,8 +138,22 @@ function apagarVenda(req, res) {
     })
 }
 
+function obterPagina(req, res) {
+    var myHtmlData;
+    fs.readFile('./vendas.html', (err, data) => {
+        if(err){
+            throw err;
+        } else {
+            myHtmlData = data
+        }
+      })
+       
+     res.write(myHtmlData)
+}
+
 //montar server
 const servidorWEB = http.createServer(function (req, res) {
+    //cors
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -161,6 +175,8 @@ const servidorWEB = http.createServer(function (req, res) {
         editarVenda(req, res)
     } else if (req.url.startsWith('/vendas/') && req.method === 'DELETE') {
         apagarVenda(req, res)
+    } else if (req.url === '/' && req.method === 'GET') {
+        obterPagina(req, res)
     } else {
         res.statusCode = 404
         res.end(JSON.stringify({ mensagem: "rota não encontrada" }))
