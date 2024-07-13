@@ -487,7 +487,7 @@
                         <form id="formAdicionarVenda" class="text-left">
                             <div class="containerForm">
                                 <div class="boxForm mt-2">
-                                    <input type="number" autocomplete="off" id="codVendedor" required>
+                                    <input type="number" autocomplete="off" id="codVendedor" onchange="checarVendedor()" required >
                                     <span>Código do vendedor</span>
                                 </div>
                                 <div class="boxForm">
@@ -684,55 +684,62 @@
             })
         }
 
-        function validar(venda) {
+        function checarVendedor() {
             fetch('http://localhost:5000/vendas')
                 .then(response => response.json())
-                .then(dados => {
-                    vendas = dados
+                .then(vendas => {
+                    let codVendedorField = document.getElementById("codVendedor")
+                    let nomeField = document.getElementById("nome")
+                    let cargoField = document.getElementById("cargo")
+                    let codVendaField = document.getElementById("codVenda")
+                    let valorVendaField = document.getElementById("valorVenda")
+                    
+                    let vendedorEncontrado = vendas.find(venda => venda.codVendedor === codVendedorField.value);
+                    if (vendedorEncontrado) {
+                        
+                        codVendedorField.value = vendedorEncontrado.codVendedor
+                        nomeField.value = vendedorEncontrado.nomeVendedor
+                        cargoField.value = vendedorEncontrado.cargoVendedor
+    
+                        nomeField.disabled = true
+                        cargoField.disabled = true
+                    } else {
+                        nomeField.disabled = false
+                        cargoField.disabled = false
+    
+                        nomeField.value = ''
+                        cargoField.value = ''
+                        }
                 })
-
-            vendas.forEach((vendaOriginal) => {
-                  if (vendaOriginal.nomeVendedor === venda.nomeVendedor && vendaOriginal.codVendedor === venda.codVendedor) {
-                      return true
-                  }
-            })
-
-            return false
         }
 
         function adicionarVenda(event) {
             event.preventDefault()
 
-            let codVendedor = document.getElementById("codVendedor").value
-            let nomeVendedor = document.getElementById("nome").value
-            let cargoVendedor = document.getElementById("cargo").value
-            let codVenda = document.getElementById("codVenda").value
-            let valorVenda = parseFloat(document.getElementById("valorVenda").value)
+            let codVendedorField = document.getElementById("codVendedor")
+            let nomeField = document.getElementById("nome")
+            let cargoField = document.getElementById("cargo")
+            let codVendaField = document.getElementById("codVenda")
+            let valorVendaField = document.getElementById("valorVenda")
 
             let venda = {
-                codVendedor,
-                nomeVendedor,
-                cargoVendedor,
-                codVenda,
-                valorVenda
+                codVendedor: codVendedorField.value,
+                nomeVendedor: nomeField.value,
+                cargoVendedor: cargoField.value,
+                codVenda: codVendaField.value,
+                valorVenda: valorVendaField.value
             }
             
-            let isValid = validar(venda);
+            fetch('http://localhost:5000/vendas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(venda)
+            }).then(() => buscarVendas())
+
+            modalAdd.style.display = 'none'
+            overlay.style.display = 'none'
+            formCriar.reset()
             
-            if(isValid) {
-                fetch('http://localhost:5000/vendas', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(venda)
-                }).then(() => buscarVendas())
-    
-                modalAdd.style.display = 'none'
-                overlay.style.display = 'none'
-                formCriar.reset()
-            } else {
-                let nomeVendedorField = document.getElementById("nome")
-                nomeVendedorField.//nome n corresponde ao cod do vendedor
-            }
 
         }
 

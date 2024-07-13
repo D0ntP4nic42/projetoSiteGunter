@@ -1,5 +1,6 @@
 const http = require('http')
 const sqlite = require('sqlite3').verbose()
+const fs = require('fs')
 
 let vendas = []
 
@@ -145,10 +146,11 @@ function obterPagina(req, res) {
             throw err;
         } else {
             myHtmlData = data
+            res.setHeader('Content-Type', 'text/html')
+            res.statusCode = 200
+            res.write(myHtmlData)
         }
       })
-       
-     res.write(myHtmlData)
 }
 
 //montar server
