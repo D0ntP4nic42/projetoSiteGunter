@@ -729,6 +729,8 @@
                 codVenda: codVendaField.value,
                 valorVenda: valorVendaField.value
             }
+
+            console.log(venda)
             
             fetch('http://localhost:5000/vendas', {
                 method: 'POST',
@@ -739,8 +741,6 @@
             modalAdd.style.display = 'none'
             overlay.style.display = 'none'
             formCriar.reset()
-            
-
         }
 
         //editar venda
