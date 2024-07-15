@@ -1,17 +1,30 @@
 const http = require('http')
 const mysql = require('mysql2');
 
-const connectionConfig = {
+function conectar(connection, tentativa = 1, tentativaMax = 10) {
+    connection.connect(err => {
+        if(err){
+            console.error("Erro de conexão, Tentatando novamente")
+            if(tentativa <= tentativaMax) {
+                setTimeout(() => connect(connection, tentativa + 1))
+            } else {
+                console.error("Falha ao conectar")
+            }
+        } else {
+            console.log("Conectado")
+        }
+        
+    }
+}
+
+const connection = mysql.createConnection ({
     host: 'mysql',
     user: 'root',
     password: '3384',
     database: 'meu_banco',
-};
+});
 
-setTimeout(() => {
-    connection = mysql.createConnection(connectionConfig);
-    console.log('Conexão com o banco de dados estabelecida com sucesso.');
-}, 30000);
+conectar(connection)
 
 //funções de manipulação
 function obterVendas(req, res) {
