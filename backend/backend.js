@@ -79,7 +79,6 @@ function editarVenda(req, res) {
                                 vendedores.nomeVendedor = ?
                                 vendedores.cargoVendedor = ?
                                 vendas.idVenda = ?
-                                vendas.idVendedor = ?
                                 vendas.valorVenda = ?
                             WHERE   
                                 vendedores.id = ?
