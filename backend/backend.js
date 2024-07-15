@@ -1,31 +1,17 @@
 const http = require('http')
 const mysql = require('mysql2');
 
-function connectWithRetry(connection, maxRetries = 10, currentRetry = 0) {
-    connection.connect(err => {
-        if (err) {
-            console.error('Connection error: ', err, `Retrying... (${currentRetry}/${maxRetries})`);
-            if (currentRetry < maxRetries) {
-                // Wait for 10 seconds before retrying, giving more time for MySQL to initialize
-                setTimeout(() => connectWithRetry(connection, maxRetries, currentRetry + 1), 10000);
-            } else {
-                console.error('Failed to connect to the database after several attempts.');
-            }
-            return;
-        }
-        console.log('Connected successfully.');
-    });
-}
-
-const connection = mysql.createConnection({
-    host: '127.0.0.1',
+const connectionConfig = {
+    host: 'mysql',
     user: 'root',
     password: '3384',
     database: 'meu_banco',
-});
+};
 
-// Replace direct connection call with connectWithRetry
-connectWithRetry(connection);
+setTimeout(() => {
+    connection = mysql.createConnection(connectionConfig);
+    console.log('Conexão com o banco de dados estabelecida com sucesso.');
+}, 30000);
 
 //funções de manipulação
 function obterVendas(req, res) {
