@@ -6,7 +6,7 @@ function conectar(connection, tentativa = 1, tentativaMax = 10) {
         if(err){
             console.error("Erro de conexão, Tentatando novamente")
             if(tentativa <= tentativaMax) {
-                setTimeout(() => connect(connection, tentativa + 1))
+                setTimeout(() => connect(connection, tentativa + 1), 10000)
             } else {
                 console.error("Falha ao conectar")
             }
@@ -69,10 +69,24 @@ function editarVenda(req, res) {
     req.on('data', chunk => body += chunk.toString()) //parte por parte 'chunks' body é a junção deles
     req.on('end', () => {
         const venda = JSON.parse(body)
-        const sql = 'UPDATE vendas SET codVendedor = ?, nomeVendedor = ?, cargoVendedor = ?, codVenda = ?, valorVenda = ? WHERE id = ?';
+        const sql = 
+                        `   UPDATE
+                                vendas
+                            INNER JOIN
+                                vendedores
+                            SET
+                                vendedores.id = ?
+                                vendedores.nomeVendedor = ?
+                                vendedores.cargoVendedor = ?
+                                vendas.idVenda = ?
+                                vendas.idVendedor = ?
+                                vendas.valorVenda = ?
+                            WHERE   
+                                vendedores.id = ?
+                        `
         const id = req.url.split('/')[2];
 
-        connection.query(sql, [venda.codVendedor, venda.nomeVendedor, venda.cargoVendedor, venda.codVenda, venda.valorVenda, id], (err) => {
+        connection.query(sql, [venda.codVendedor, venda.nomeVendedor, venda.cargoVendedor, venda.codVenda, venda.codVendedor, venda.valorVenda, venda.codVendedor], (err) => {
             if (err) {
                 console.error('Erro ao editar venda: ', err);
                 res.statusCode = 500;
@@ -109,6 +123,10 @@ function apagarVenda(req, res) {
     }
 }
 
+function vendaPorId(req, res) {
+    const sql = "SELECT * FROM vendas"
+}
+
 function obterPagina(req, res) {
 
 }
@@ -131,6 +149,8 @@ const servidorWEB = http.createServer(function (req, res) {
     //metodos de requisições
     if (req.url === '/vendas' && req.method === 'GET') {
         obterVendas(req, res)
+    } else if (req.url === '/vendas/' && req.method === 'GET') {
+        vendaPorId(req, res)
     } else if (req.url === '/vendas' && req.method === 'POST') { //add
         adicionarVenda(req, res)
     } else if (req.url.startsWith('/vendas/') && req.method === 'PUT') {
