@@ -28,7 +28,7 @@ conectar(connection)
 
 //funções de manipulação
 function obterVendas(req, res) {
-    const sql = 'SELECT * FROM vendas';
+    const sql = 'SELECT * FROM vendas INNER JOIN vendedores';
 
     connection.query(sql, (err, results) => {
         if (err) {
@@ -47,7 +47,40 @@ function adicionarVenda(req, res) {
     req.on('data', chunk => body += chunk.toString()) //parte por parte 'chunks' body é a junção deles
     req.on('end', () => {
         const venda = JSON.parse(body);
-        const sql = 'INSERT INTO vendas (codVendedor, nomeVendedor, cargoVendedor, codVenda, valorVenda) VALUES (?, ?, ?, ?, ?)';
+
+        const sql = "SELECT EXISTS(SELECT * FROM vendedores WHERE id = ${venda.codVendedor})
+
+        const existe = connection.query(sql, (err) => {
+            if (err) {
+                console.error('Erro ao adicionar venda: ', err);
+                res.statusCode = 500;
+                res.end(JSON.stringify({ mensagem: "Erro ao adicionar venda" }));
+                return;
+            }
+
+            res.statusCode = 200;
+            res.end(JSON.stringify(venda));
+        })
+        
+		if (existe) {
+			const sqlInsert = `
+	                    INSERT INTO 
+	                        vendas (vendas.idVenda, vendas.idVendedor, vendas.valorVenda)
+	                    VALUES
+	                        (?, ?, ?)
+	                    `;
+		} else {
+	        //caso vendedor não exista
+	        const sqlInsert = `
+	                    INSERT INTO 
+	                        vendas 
+	                    INNER JOIN
+	                        vendedores (vendas.idVenda, vendas.idVendedor, vendas.valorVenda, vendedor.id, vendedor.nomeVendedor, vendedor.cargoVendedor)
+	                    VALUES
+	                        (?, ?, ?, ?, ?, ?)
+	                    `;
+			
+		}
 
         connection.query(sql, [venda.codVendedor, venda.nomeVendedor, venda.cargoVendedor, venda.codVenda, venda.valorVenda], (err) => {
             if (err) {
@@ -72,20 +105,16 @@ function editarVenda(req, res) {
         const sql = 
                         `   UPDATE
                                 vendas
-                            INNER JOIN
-                                vendedores
                             SET
-                                vendedores.id = ?
-                                vendedores.nomeVendedor = ?
-                                vendedores.cargoVendedor = ?
+                                vendas.idVendedor = ?
                                 vendas.idVenda = ?
                                 vendas.valorVenda = ?
                             WHERE   
-                                vendedores.id = ?
+                                vendas.idVendedor = ?
                         `
         const id = req.url.split('/')[2];
 
-        connection.query(sql, [venda.codVendedor, venda.nomeVendedor, venda.cargoVendedor, venda.codVenda, venda.codVendedor, venda.valorVenda, venda.codVendedor], (err) => {
+        connection.query(sql, [venda.codVendedor, venda.codVenda, venda.valorVenda, venda.codVenda], (err) => {
             if (err) {
                 console.error('Erro ao editar venda: ', err);
                 res.statusCode = 500;
@@ -103,7 +132,7 @@ function apagarVenda(req, res) {
     const sql = 'DELETE FROM vendas WHERE id = ?';
     const id = req.url.split('/')[2];
 
-    if(id > 0){
+    if(id > 0) {
         connection.query(sql, [id], (err) => {
             if (err) {
                 console.error('Erro ao apagar venda: ', err);
