@@ -9,8 +9,11 @@ CREATE TABLE IF NOT EXISTS vendedores(
 
 CREATE TABLE IF NOT EXISTS vendas (
   idVenda INT PRIMARY KEY AUTO_INCREMENT,
-  idVendedor INT FOREIGN KEY REFERENCES vendedores(id)
-  valorVenda VAECHAR(40)
+  idVendedor INT, 
+  FOREIGN KEY (idVendedor) REFERENCES vendedores(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  valorVenda VARCHAR(40)
 );
 
 INSERT INTO vendedores VALUES('Valderrama dos Prazeres','pleno');
