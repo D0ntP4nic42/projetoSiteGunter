@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      MYSQL_DATABASE: "meu_banco"
+      MYSQL_ROOT_PASSWORD: "3384"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    restart: always
+    expose:
+      - '3306'
+    networks:
+      - backend
+
+  api:
+    build: .
+    container_name: api-container
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  mysql-data:
+  mysql-init:

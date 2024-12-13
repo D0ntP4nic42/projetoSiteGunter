@@ -487,16 +487,16 @@
                         <form id="formAdicionarVenda" class="text-left">
                             <div class="containerForm">
                                 <div class="boxForm mt-2">
-                                    <input type="number" autocomplete="off" id="codVendedor" required>
+                                    <input type="number" autocomplete="off" id="codVendedor" onchange="checarVendedor()" required >
                                     <span>Código do vendedor</span>
                                 </div>
                                 <div class="boxForm">
-                                    <input type="text" id="nome" autocomplete="off" required>
+                                    <input type="text" id="nome" autocomplete="off" disabled=true required>
                                     <span>Nome</span>
                                 </div>
                                 <div class="boxForm cargoForm">
                                     <div class="form-group">
-                                        <select class="custom-select" name="cargo" id="cargo">
+                                        <select class="custom-select" name="cargo" id="cargo" disabled=true>
                                             <option value="junior" selected>Júnior</option>
                                             <option value="pleno">Pleno</option>
                                             <option value="senior">Sênior</option>
@@ -539,16 +539,16 @@
                         <form id="formEditarVenda" class="text-left">
                             <div class="containerForm">
                                 <div class="boxForm mt-2">
-                                    <input type="number" autocomplete="off" id="codVendedorEditar" required>
+                                    <input type="number" autocomplete="off" id="codVendedorEditar" onchange="checarVendedor()" required>
                                     <span>Código do vendedor</span>
                                 </div>
                                 <div class="boxForm">
-                                    <input type="text" id="nomeEditar" autocomplete="off" required>
+                                    <input type="text" id="nomeEditar" autocomplete="off" disabled=true required>
                                     <span>Nome</span>
                                 </div>
                                 <div class="boxForm cargoForm">
                                     <div class="form-group">
-                                        <select class="custom-select" name="cargoEditar" id="cargoEditar">
+                                        <select class="custom-select" name="cargoEditar" id="cargoEditar" disabled=true>
                                             <option id="juniorEditar" value="junior" selected>Júnior</option>
                                             <option id="plenoEditar" value="pleno">Pleno</option>
                                             <option id="seniorEditar" value="senior">Sênior</option>
@@ -684,23 +684,64 @@
             })
         }
 
+        function checarVendedor() {
+            fetch('http://localhost:5000/vendas')
+                .then(response => response.json())
+                .then(vendas => {
+                    let codVendedorField = document.getElementById("codVendedor")
+                    let nomeField = document.getElementById("nome")
+                    let cargoField = document.getElementById("cargo")
+                    let codVendaField = document.getElementById("codVenda")
+                    let valorVendaField = document.getElementById("valorVenda")
+
+                    let codVendedor = codVendedorField.toString().padStart(3,'0')
+                    
+                    let vendedorEncontrado = vendas.find(venda => venda.codVendedor === codVendedor);
+                    if (vendedorEncontrado) {
+                        
+                        codVendedorField.value = vendedorEncontrado.codVendedor
+                        nomeField.value = vendedorEncontrado.nomeVendedor
+
+                        if (venda.cargoVendedor === 'junior') {
+                            cargoVendedorFormatado = 'Júnior'
+                        } else if (venda.cargoVendedor === 'pleno') {
+                            cargoVendedorFormatado = 'Pleno'
+                        } else {
+                            cargoVendedorFormatado = 'Sênior'
+                        }
+
+                        cargoField.value = cargoVendedorFormatado
+    
+                        nomeField.disabled = true
+                        cargoField.disabled = true
+                    } else {
+                        nomeField.disabled = false
+                        cargoField.disabled = false
+    
+                        nomeField.value = ''
+                        cargoField.value = ''
+                        }
+                })
+        }
+
         function adicionarVenda(event) {
             event.preventDefault()
 
-            let codVendedor = document.getElementById("codVendedor").value
-            let nomeVendedor = document.getElementById("nome").value
-            let cargoVendedor = document.getElementById("cargo").value
-            let codVenda = document.getElementById("codVenda").value
-            let valorVenda = parseFloat(document.getElementById("valorVenda").value)
+            let codVendedorField = document.getElementById("codVendedor")
+            let nomeField = document.getElementById("nome")
+            let cargoField = document.getElementById("cargo")
+            let codVendaField = document.getElementById("codVenda")
+            let valorVendaField = document.getElementById("valorVenda")
 
             let venda = {
-                codVendedor,
-                nomeVendedor,
-                cargoVendedor,
-                codVenda,
-                valorVenda
+                codVendedor: codVendedorField.value,
+                nomeVendedor: nomeField.value,
+                cargoVendedor: cargoField.value,
+                codVenda: codVendaField.value,
+                valorVenda: valorVendaField.value
             }
 
+            
             fetch('http://localhost:5000/vendas', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
